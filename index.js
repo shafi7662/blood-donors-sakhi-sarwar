@@ -58,5 +58,18 @@
   $("search-btn").addEventListener("click", search);
   groupSel.addEventListener("change", search);
   citySel.addEventListener("change", search);
+
+  // Blood-group pills: tap a group → filter + search
+  document.querySelectorAll("#groups-row .group-pill").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#groups-row .group-pill").forEach(function (x) {
+        x.classList.remove("active");
+      });
+      b.classList.add("active");
+      groupSel.value = b.getAttribute("data-group");
+      search();
+    });
+  });
+
   search();
 })();

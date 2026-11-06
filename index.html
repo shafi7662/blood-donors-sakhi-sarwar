@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <header class="topbar">
@@ -30,6 +30,9 @@
   <section class="hero">
     <img class="hero-img" src="hero-team.jpg?v=2" alt="میڈیکل ٹیم" loading="eager">
     <div class="hero-overlay"></div>
+    <span class="drop" style="top: 12%; right: 8%;">🩸</span>
+    <span class="drop" style="top: 26%; right: 78%; animation-delay: 1.2s; font-size: 1.1em;">🩸</span>
+    <span class="drop" style="top: 62%; right: 6%; animation-delay: 2.1s; font-size: 1.2em;">🩸</span>
     <div class="hero-text">
       <h1>خون عطیہ کریں، زندگی بچائیں</h1>
       <p>ہم سخی سرور اور ڈیرہ غازی خان کے رضاکار ہیں۔ ہمارا مقصد یہ ہے کہ جس مریض کو خون کی ضرورت ہو، اسے بروقت عطیہ دہندہ مل جائے۔ آپ کا ایک عطیہ کسی کی زندگی بچا سکتا ہے۔</p>
@@ -39,6 +42,8 @@
       </div>
     </div>
   </section>
+
+  <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>خون عطیہ کریں ✦ زندگی بچائیں ✦ ایک عطیہ، ایک زندگی ✦ خدمتِ خلق ✦&nbsp;</span><span>خون عطیہ کریں ✦ زندگی بچائیں ✦ ایک عطیہ، ایک زندگی ✦ خدمتِ خلق ✦&nbsp;</span></div></div>
 
   <section class="trust">
     <div class="trust-item">✓ مفت خدمت — کوئی فیس نہیں</div>
@@ -83,6 +88,17 @@
   <section class="card">
     <h2>ڈونر تلاش کریں</h2>
     <p class="hint">رازداری: یہاں صرف نام، شہر، بلڈ گروپ اور آخری عطیے کی تاریخ نظر آتی ہے۔ فون نمبر کبھی عوامی طور پر نہیں دکھایا جاتا — ڈونر سے رابطہ ٹیم کے ذریعے ہوتا ہے۔</p>
+    <div class="groups-row" id="groups-row">
+      <button type="button" class="group-pill all" data-group="">سب</button>
+      <button type="button" class="group-pill" data-group="A+">A+</button>
+      <button type="button" class="group-pill" data-group="A-">A-</button>
+      <button type="button" class="group-pill" data-group="B+">B+</button>
+      <button type="button" class="group-pill" data-group="B-">B-</button>
+      <button type="button" class="group-pill" data-group="AB+">AB+</button>
+      <button type="button" class="group-pill" data-group="AB-">AB-</button>
+      <button type="button" class="group-pill" data-group="O+">O+</button>
+      <button type="button" class="group-pill" data-group="O-">O-</button>
+    </div>
     <div id="config-note"></div>
     <div class="filters">
       <div>
@@ -113,6 +129,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="app.js"></script>
-<script src="index.js"></script>
+<script src="index.js?v=2"></script>
 </body>
 </html>
