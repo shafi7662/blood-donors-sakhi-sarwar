@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <header class="topbar">
   <div class="container">
-    <div class="brand">المصباح اور المصطفیٰ بلڈ ڈونیشن
+    <div class="brand"><span class="brand-mark">🩸</span> المصباح اور المصطفیٰ بلڈ ڈونیشن
       <small>سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
     </div>
     <nav class="main">
@@ -28,18 +28,34 @@
 <div class="container">
 
   <section class="hero">
-    <h1>خون عطیہ کریں، زندگی بچائیں</h1>
-    <p>ہم سخی سرور اور ڈیرہ غازی خان کے رضاکار ہیں۔ ہمارا مقصد یہ ہے کہ جس مریض کو خون کی ضرورت ہو، اسے بروقت عطیہ دہندہ مل جائے۔ آپ کا ایک عطیہ کسی کی زندگی بچا سکتا ہے۔</p>
+    <img class="hero-img" src="hero-team.jpg" alt="میڈیکل ٹیم" loading="eager">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <h1>خون عطیہ کریں، زندگی بچائیں</h1>
+      <p>ہم سخی سرور اور ڈیرہ غازی خان کے رضاکار ہیں۔ ہمارا مقصد یہ ہے کہ جس مریض کو خون کی ضرورت ہو، اسے بروقت عطیہ دہندہ مل جائے۔ آپ کا ایک عطیہ کسی کی زندگی بچا سکتا ہے۔</p>
+      <div class="hero-cta">
+        <a class="btn white" href="register.html">ڈونر بنیں</a>
+        <a class="btn green" href="need-blood.html">خون چاہیے</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust">
+    <div class="trust-item">✓ مفت خدمت — کوئی فیس نہیں</div>
+    <div class="trust-item">✓ خون صرف لائسنس یافتہ لیب سے</div>
+    <div class="trust-item">✓ ڈونر کا فون نمبر خفیہ رہتا ہے</div>
   </section>
 
   <section class="card">
     <h2>ہماری ٹیمیں</h2>
     <div class="team-grid">
       <div class="team">
+        <span class="team-icon">🏥</span>
         <b>المصباح میڈیکل ٹیم</b>
         <p>سخی سرور میں مریضوں کی مدد اور خون کا انتظام کرنے والی رضاکار ٹیم۔</p>
       </div>
       <div class="team">
+        <span class="team-icon">🩸</span>
         <b>المصطفیٰ بلڈ ڈونیشن گروپ</b>
         <p>سخی سرور میں خون کے عطیات کا انتظام کرنے والا رضاکار گروپ۔ دونوں ٹیمیں مل کر ایک ہی کام کرتی ہیں۔</p>
       </div>
@@ -53,6 +69,15 @@
       <li><b>ٹیم رابطہ کرے گی:</b> مریض اپنی HB رپورٹ اور بلڈ گروپ ٹیم کو دیتا ہے؛ ٹیم جتنا خون درکار ہو، اتنے یونٹ کا انتظام کرتی ہے۔ رابطہ WhatsApp کے ذریعے ہوتا ہے۔</li>
       <li><b>خون صرف لائسنس یافتہ لیب سے:</b> خون کا لینا، چیک کرنا اور لگانا صرف اسپتال یا لائسنس یافتہ لیب / بلڈ بینک میں ہوتا ہے۔</li>
     </ol>
+  </section>
+
+  <section class="card donate-split">
+    <img class="split-img" src="donation.jpg" alt="خون کا عطیہ" loading="lazy">
+    <div>
+      <h2>خون کون دے سکتا ہے؟</h2>
+      <p>عمر 18 سے 60 سال، وزن کم از کم 50 کلو، آخری عطیہ کم از کم 3 ماہ پہلے دیا ہو، اور ہیپاٹائٹس بی یا سی نہ ہو۔ عطیے سے پہلے لیب آپ کی صحت ضرور چیک کرتی ہے۔</p>
+      <a class="btn" href="register.html">ابھی ڈونر بنیں</a>
+    </div>
   </section>
 
   <section class="card">
@@ -72,11 +97,6 @@
     <button class="btn" id="search-btn" type="button">تلاش کریں</button>
     <div id="results" class="donor-grid"></div>
     <p id="results-empty" class="empty" style="display:none">اس گروپ / شہر کا کوئی ڈونر ابھی رجسٹرڈ نہیں ہے۔ براہِ کرم ٹیم سے رابطہ کریں یا بعد میں دوبارہ دیکھیں۔</p>
-  </section>
-
-  <section class="card">
-    <h2>خون کون دے سکتا ہے؟</h2>
-    <p>عمر 18 سے 60 سال، وزن کم از کم 50 کلو، آخری عطیہ کم از کم 3 ماہ پہلے دیا ہو، اور ہیپاٹائٹس بی یا سی نہ ہو۔ عطیے سے پہلے لیب آپ کی صحت ضرور چیک کرتی ہے۔</p>
   </section>
 
   <div class="notice">
