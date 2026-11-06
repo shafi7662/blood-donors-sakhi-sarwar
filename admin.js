@@ -3,9 +3,14 @@
 // v2: search + blood-group filter, per-donor stats (last donation, days since, count),
 // "record donation" button, and delete buttons (RLS delete policies for authenticated).
 (function () {
-  fillGroupSelect($("d-group"), "— تمام گروپ —", true);
-  fillGroupSelect($("r-group"), "— تمام گروپ —", true);
-  fillCitySelect($("d-city"), "— تمام شہر —");
+  function fillAdminSelects() {
+    var dg = $("d-group").value, rg = $("r-group").value, dc = $("d-city").value;
+    fillGroupSelect($("d-group"), t("all_groups"), true);
+    fillGroupSelect($("r-group"), t("all_groups"), true);
+    fillCitySelect($("d-city"), t("all_cities"));
+    $("d-group").value = dg; $("r-group").value = rg; $("d-city").value = dc;
+  }
+  fillAdminSelects();
   $("config-note").innerHTML = configWarningBox();
 
   var allDonors = [];
@@ -49,7 +54,7 @@
   $("auth-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     if (!SUPABASE_READY || !supabaseClient) {
-      showToast("Supabase سیٹ اپ مکمل نہیں ہے — پہلے supabase-config.js بھریں۔");
+      showToast(t("toast_auth_setup"));
       return;
     }
     var btn = $("auth-btn");
@@ -81,7 +86,7 @@
     var res = await supabaseClient.from("donors").select("*").order("created_at", { ascending: false }).limit(200);
     if (res.error) {
       console.error(res.error);
-      showToast("ڈونرز لوڈ نہیں ہو سکے — کیا آپ سائن ان ہیں؟");
+      showToast(t("toast_donors_fail"));
       return;
     }
     allDonors = res.data;
@@ -107,23 +112,21 @@
     $("donor-empty").style.display = list.length ? "none" : "block";
     list.forEach(function (d) {
       var tr = document.createElement("tr");
-      var wa = waLink(d.phone,
-        "السلام علیکم " + d.name + "! میں المصباح / المصطفیٰ بلڈ ڈونیشن ٹیم سے ہوں۔ " +
-        "آپ کے بلڈ گروپ (" + d.blood_group + ") کی ضرورت ہے — کیا آپ خون دے سکتے ہیں؟");
+      var wa = waLink(d.phone, t("wa_admin_donor", { name: d.name, group: d.blood_group }));
       var count = d.donation_count == null ? 0 : d.donation_count;
       tr.innerHTML =
         "<td>" + esc(d.name) + "</td>" +
         "<td><b>" + esc(d.blood_group) + "</b></td>" +
-        "<td>" + esc(d.city) + "</td>" +
+        "<td>" + esc(cityLabel(d.city)) + "</td>" +
         "<td>" + esc(d.age) + "</td>" +
         "<td>" + esc(d.last_donation_date || "—") + "</td>" +
         "<td>" + daysSince(d.last_donation_date) + "</td>" +
         "<td><b>" + count + "</b></td>" +
         "<td dir=\"ltr\">" + esc(d.phone) + "</td>" +
         "<td style=\"white-space:nowrap\">" +
-          "<a class=\"btn small green\" href=\"" + wa + "\" target=\"_blank\">WhatsApp</a> " +
-          "<button class=\"btn small\" type=\"button\" data-donated=\"" + d.id + "\" data-name=\"" + esc(d.name) + "\">عطیہ درج کریں</button> " +
-          "<button class=\"btn small danger\" type=\"button\" data-del-donor=\"" + d.id + "\" data-name=\"" + esc(d.name) + "\">حذف کریں</button>" +
+          "<a class=\"btn small green\" href=\"" + wa + "\" target=\"_blank\">" + esc(t("btn_whatsapp")) + "</a> " +
+          "<button class=\"btn small\" type=\"button\" data-donated=\"" + d.id + "\" data-name=\"" + esc(d.name) + "\">" + esc(t("btn_donated")) + "</button> " +
+          "<button class=\"btn small danger\" type=\"button\" data-del-donor=\"" + d.id + "\" data-name=\"" + esc(d.name) + "\">" + esc(t("btn_delete")) + "</button>" +
         "</td>";
       tbody.appendChild(tr);
     });
@@ -133,23 +136,23 @@
       btnEl.addEventListener("click", async function () {
         var donor = allDonors.find(function (x) { return x.id === btnEl.dataset.donated; });
         if (!donor) return;
-        if (!confirm(donor.name + " کا آج کا عطیہ درج کریں؟")) return;
+        if (!confirm(t("confirm_donated", { name: donor.name }))) return;
         var upd = await supabaseClient.from("donors").update({
           donation_count: (donor.donation_count || 0) + 1,
           last_donation_date: todayStr()
         }).eq("id", donor.id);
-        if (upd.error) { console.error(upd.error); showToast("عطیہ درج نہیں ہو سکا۔"); }
-        else { showToast("عطیہ درج ہو گیا — " + donor.name + " (" + ((donor.donation_count || 0) + 1) + " بار)۔"); loadDonors(); }
+        if (upd.error) { console.error(upd.error); showToast(t("toast_donated_fail")); }
+        else { showToast(t("toast_donated_ok", { name: donor.name, count: (donor.donation_count || 0) + 1 })); loadDonors(); }
       });
     });
 
     // delete a donor (with confirm — cannot be undone)
     tbody.querySelectorAll("[data-del-donor]").forEach(function (btnEl) {
       btnEl.addEventListener("click", async function () {
-        if (!confirm(btnEl.dataset.name + " کو حذف کریں؟ یہ واپس نہیں ہوگا۔")) return;
+        if (!confirm(t("confirm_del_donor", { name: btnEl.dataset.name }))) return;
         var del = await supabaseClient.from("donors").delete().eq("id", btnEl.dataset.delDonor);
-        if (del.error) { console.error(del.error); showToast("حذف نہیں ہو سکا۔"); }
-        else { showToast("ڈونر حذف ہو گیا۔"); loadDonors(); }
+        if (del.error) { console.error(del.error); showToast(t("toast_del_donor_fail")); }
+        else { showToast(t("toast_del_donor_ok")); loadDonors(); }
       });
     });
   }
@@ -160,7 +163,7 @@
       .select("*").order("created_at", { ascending: false }).limit(200);
     if (res.error) {
       console.error(res.error);
-      showToast("درخواستیں لوڈ نہیں ہو سکیں — کیا آپ سائن ان ہیں؟");
+      showToast(t("toast_reqs_fail"));
       return;
     }
     allRequests = res.data;
@@ -176,7 +179,7 @@
   function ccText(r) {
     var cc = ccOf(r);
     if (!cc) return "—";
-    return cc + " cc (~" + Math.ceil(cc / 400) + " یونٹ)";
+    return cc + " cc (~" + Math.ceil(cc / 400) + " " + t("cc_units") + ")";
   }
 
   function renderRequests() {
@@ -191,14 +194,13 @@
     list.forEach(function (r) {
       var tr = document.createElement("tr");
       var wa = waLink(r.requester_phone,
-        "السلام علیکم! آپ کی خون کی درخواست (" + r.blood_group + "، " + ccText(r) + "، " +
-        r.patient_name + ") مل گئی ہے۔ ٹیم انتظام کر رہی ہے۔");
+        t("wa_admin_req", { group: r.blood_group, cc: ccText(r), patient: r.patient_name }));
       var statusBadge = r.status === "fulfilled"
-        ? '<span class="badge done">مکمل</span>'
+        ? '<span class="badge done">' + esc(t("status_fulfilled")) + "</span>"
         : '<span class="badge">' + esc(statusLabel(r.status)) + "</span>";
       tr.innerHTML =
         "<td>" + esc(r.patient_name) + "</td>" +
-        "<td>" + esc(r.hospital) + "، " + esc(r.city) + "</td>" +
+        "<td>" + esc(r.hospital) + (CURRENT_LANG === "ur" ? "، " : ", ") + esc(cityLabel(r.city)) + "</td>" +
         "<td><b>" + esc(r.blood_group) + "</b></td>" +
         "<td><b>" + esc(ccText(r)) + "</b></td>" +
         "<td>" + statusBadge + "<br>" +
@@ -208,12 +210,12 @@
             }).join("") +
           "</select></td>" +
         "<td>" + (r.report_path
-          ? "<button class=\"btn small\" type=\"button\" data-report=\"" + esc(r.report_path) + "\">رپورٹ دیکھیں</button>"
+          ? "<button class=\"btn small\" type=\"button\" data-report=\"" + esc(r.report_path) + "\">" + esc(t("th_report_btn")) + "</button>"
           : "—") + "</td>" +
         "<td dir=\"ltr\">" + esc(r.requester_phone) + "</td>" +
         "<td style=\"white-space:nowrap\">" +
-          "<a class=\"btn small green\" href=\"" + wa + "\" target=\"_blank\">WhatsApp</a> " +
-          "<button class=\"btn small danger\" type=\"button\" data-del-req=\"" + r.id + "\" data-name=\"" + esc(r.patient_name) + "\">حذف کریں</button>" +
+          "<a class=\"btn small green\" href=\"" + wa + "\" target=\"_blank\">" + esc(t("btn_whatsapp")) + "</a> " +
+          "<button class=\"btn small danger\" type=\"button\" data-del-req=\"" + r.id + "\" data-name=\"" + esc(r.patient_name) + "\">" + esc(t("btn_delete")) + "</button>" +
         "</td>";
       tbody.appendChild(tr);
     });
@@ -223,8 +225,8 @@
       sel.addEventListener("change", async function () {
         var upd = await supabaseClient.from("blood_requests")
           .update({ status: sel.value }).eq("id", sel.dataset.req);
-        if (upd.error) { console.error(upd.error); showToast("حالت اپ ڈیٹ نہیں ہو سکی۔"); }
-        else { showToast("حالت اپ ڈیٹ ہو گئی۔"); loadRequests(); }
+        if (upd.error) { console.error(upd.error); showToast(t("toast_status_fail")); }
+        else { showToast(t("toast_status_ok")); loadRequests(); }
       });
     });
 
@@ -235,7 +237,7 @@
           .createSignedUrl(btnEl.dataset.report, 3600);
         if (s.error || !s.data) {
           console.error(s.error);
-          showToast("رپورٹ کھول نہیں سکی — دوبارہ کوشش کریں۔");
+          showToast(t("toast_report_fail"));
           return;
         }
         window.open(s.data.signedUrl, "_blank");
@@ -245,17 +247,25 @@
     // delete a request (with confirm — cannot be undone)
     tbody.querySelectorAll("[data-del-req]").forEach(function (btnEl) {
       btnEl.addEventListener("click", async function () {
-        if (!confirm(btnEl.dataset.name + " کی درخواست حذف کریں؟ یہ واپس نہیں ہوگا۔")) return;
+        if (!confirm(t("confirm_del_req", { name: btnEl.dataset.name }))) return;
         var del = await supabaseClient.from("blood_requests").delete().eq("id", btnEl.dataset.delReq);
-        if (del.error) { console.error(del.error); showToast("حذف نہیں ہو سکا۔"); }
-        else { showToast("درخواست حذف ہو گئی۔"); loadRequests(); }
+        if (del.error) { console.error(del.error); showToast(t("toast_del_req_fail")); }
+        else { showToast(t("toast_del_req_ok")); loadRequests(); }
       });
     });
   }
 
   function statusLabel(s) {
-    return { pending: "زیرِ غور", arranged: "انتظام ہو گیا", fulfilled: "مکمل", cancelled: "منسوخ" }[s] || s;
+    return { pending: t("status_pending"), arranged: t("status_arranged"), fulfilled: t("status_fulfilled"), cancelled: t("status_cancelled") }[s] || s;
   }
+
+  // Language switched: refill translated selects and re-render cached tables
+  window.__onLangChange = function () {
+    fillAdminSelects();
+    $("config-note").innerHTML = configWarningBox();
+    renderDonors();
+    renderRequests();
+  };
 
   $("refresh-donors").addEventListener("click", loadDonors);
   $("refresh-reqs").addEventListener("click", loadRequests);
