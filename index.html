@@ -8,19 +8,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
-<body>
+<body data-page="home">
 <header class="topbar">
   <div class="container">
-    <div class="brand"><span class="brand-mark">🩸</span> المصباح اور المصطفیٰ بلڈ ڈونیشن
-      <small>سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
+    <div class="brand"><span class="brand-mark">🩸</span> <span data-i18n="brand_name">المصباح اور المصطفیٰ بلڈ ڈونیشن</span>
+      <small data-i18n="brand_sub">سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
     </div>
     <nav class="main">
-      <a href="index.html" class="active">ہوم</a>
-      <a href="register.html">ڈونر بنیں</a>
-      <a href="need-blood.html">خون چاہیے</a>
-      <a href="admin.html">ایڈمن</a>
+      <a href="index.html" class="active" data-i18n="nav_home">ہوم</a>
+      <a href="register.html" data-i18n="nav_register">ڈونر بنیں</a>
+      <a href="need-blood.html" data-i18n="nav_need">خون چاہیے</a>
+      <a href="admin.html" data-i18n="nav_admin">ایڈمن</a>
+      <button type="button" id="lang-toggle" class="lang-toggle">English</button>
     </nav>
   </div>
 </header>
@@ -34,62 +35,62 @@
     <span class="drop" style="top: 26%; right: 78%; animation-delay: 1.2s; font-size: 1.1em;">🩸</span>
     <span class="drop" style="top: 62%; right: 6%; animation-delay: 2.1s; font-size: 1.2em;">🩸</span>
     <div class="hero-text">
-      <h1>خون عطیہ کریں، زندگی بچائیں</h1>
-      <p>ہم سخی سرور اور ڈیرہ غازی خان کے رضاکار ہیں۔ ہمارا مقصد یہ ہے کہ جس مریض کو خون کی ضرورت ہو، اسے بروقت عطیہ دہندہ مل جائے۔ آپ کا ایک عطیہ کسی کی زندگی بچا سکتا ہے۔</p>
+      <h1 data-i18n="hero_h1">خون عطیہ کریں، زندگی بچائیں</h1>
+      <p data-i18n="hero_p">ہم سخی سرور اور ڈیرہ غازی خان کے رضاکار ہیں۔ ہمارا مقصد یہ ہے کہ جس مریض کو خون کی ضرورت ہو، اسے بروقت عطیہ دہندہ مل جائے۔ آپ کا ایک عطیہ کسی کی زندگی بچا سکتا ہے۔</p>
       <div class="hero-cta">
-        <a class="btn white" href="register.html">ڈونر بنیں</a>
-        <a class="btn green" href="need-blood.html">خون چاہیے</a>
+        <a class="btn white" href="register.html" data-i18n="hero_cta_donor">ڈونر بنیں</a>
+        <a class="btn green" href="need-blood.html" data-i18n="hero_cta_need">خون چاہیے</a>
       </div>
     </div>
   </section>
 
-  <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>خون عطیہ کریں ✦ زندگی بچائیں ✦ ایک عطیہ، ایک زندگی ✦ خدمتِ خلق ✦&nbsp;</span><span>خون عطیہ کریں ✦ زندگی بچائیں ✦ ایک عطیہ، ایک زندگی ✦ خدمتِ خلق ✦&nbsp;</span></div></div>
+  <div class="marquee" aria-hidden="true"><div class="marquee-track"><span data-i18n-html="marquee">خون عطیہ کریں ✦ زندگی بچائیں ✦ ایک عطیہ، ایک زندگی ✦ خدمتِ خلق ✦&nbsp;</span><span data-i18n-html="marquee">خون عطیہ کریں ✦ زندگی بچائیں ✦ ایک عطیہ، ایک زندگی ✦ خدمتِ خلق ✦&nbsp;</span></div></div>
 
   <section class="trust">
-    <div class="trust-item">✓ مفت خدمت — کوئی فیس نہیں</div>
-    <div class="trust-item">✓ خون صرف لائسنس یافتہ لیب سے</div>
-    <div class="trust-item">✓ ڈونر کا فون نمبر خفیہ رہتا ہے</div>
+    <div class="trust-item" data-i18n="trust1">✓ مفت خدمت — کوئی فیس نہیں</div>
+    <div class="trust-item" data-i18n="trust2">✓ خون صرف لائسنس یافتہ لیب سے</div>
+    <div class="trust-item" data-i18n="trust3">✓ ڈونر کا فون نمبر خفیہ رہتا ہے</div>
   </section>
 
   <section class="card">
-    <h2>ہماری ٹیمیں</h2>
+    <h2 data-i18n="teams_h2">ہماری ٹیمیں</h2>
     <div class="team-grid">
       <div class="team">
         <span class="team-icon">🏥</span>
-        <b>المصباح میڈیکل ٹیم</b>
-        <p>سخی سرور میں مریضوں کی مدد اور خون کا انتظام کرنے والی رضاکار ٹیم۔</p>
+        <b data-i18n="team1_name">المصباح میڈیکل ٹیم</b>
+        <p data-i18n="team1_desc">سخی سرور میں مریضوں کی مدد اور خون کا انتظام کرنے والی رضاکار ٹیم۔</p>
       </div>
       <div class="team">
         <span class="team-icon">🩸</span>
-        <b>المصطفیٰ بلڈ ڈونیشن گروپ</b>
-        <p>سخی سرور میں خون کے عطیات کا انتظام کرنے والا رضاکار گروپ۔ دونوں ٹیمیں مل کر ایک ہی کام کرتی ہیں۔</p>
+        <b data-i18n="team2_name">المصطفیٰ بلڈ ڈونیشن گروپ</b>
+        <p data-i18n="team2_desc">سخی سرور میں خون کے عطیات کا انتظام کرنے والا رضاکار گروپ۔ دونوں ٹیمیں مل کر ایک ہی کام کرتی ہیں۔</p>
       </div>
     </div>
   </section>
 
   <section class="card">
-    <h2>طریقہ کار — کیسے کام کرتا ہے؟</h2>
+    <h2 data-i18n="how_h2">طریقہ کار — کیسے کام کرتا ہے؟</h2>
     <ol class="steps">
-      <li><b>ڈونر بنیں یا تلاش کریں:</b> خون دینے کے لیے رجسٹر کریں، یا نیچے اپنے گروپ کا ڈونر تلاش کریں۔</li>
-      <li><b>ٹیم رابطہ کرے گی:</b> مریض اپنی HB رپورٹ اور بلڈ گروپ ٹیم کو دیتا ہے؛ ٹیم جتنی cc خون درکار ہو، اتنے کا انتظام کرتی ہے۔ رابطہ WhatsApp کے ذریعے ہوتا ہے۔</li>
-      <li><b>خون صرف لائسنس یافتہ لیب سے:</b> خون کا لینا، چیک کرنا اور لگانا صرف اسپتال یا لائسنس یافتہ لیب / بلڈ بینک میں ہوتا ہے۔</li>
+      <li data-i18n-html="step1"><b>ڈونر بنیں یا تلاش کریں:</b> خون دینے کے لیے رجسٹر کریں، یا نیچے اپنے گروپ کا ڈونر تلاش کریں۔</li>
+      <li data-i18n-html="step2"><b>ٹیم رابطہ کرے گی:</b> مریض اپنی HB رپورٹ اور بلڈ گروپ ٹیم کو دیتا ہے؛ ٹیم جتنی cc خون درکار ہو، اتنے کا انتظام کرتی ہے۔ رابطہ WhatsApp کے ذریعے ہوتا ہے۔</li>
+      <li data-i18n-html="step3"><b>خون صرف لائسنس یافتہ لیب سے:</b> خون کا لینا، چیک کرنا اور لگانا صرف اسپتال یا لائسنس یافتہ لیب / بلڈ بینک میں ہوتا ہے۔</li>
     </ol>
   </section>
 
   <section class="card donate-split">
     <img class="split-img" src="donation.jpg?v=2" alt="خون کا عطیہ" loading="lazy">
     <div>
-      <h2>خون کون دے سکتا ہے؟</h2>
-      <p>عمر 18 سے 60 سال، وزن کم از کم 50 کلو، آخری عطیہ کم از کم 3 ماہ پہلے دیا ہو، اور ہیپاٹائٹس بی یا سی نہ ہو۔ عطیے سے پہلے لیب آپ کی صحت ضرور چیک کرتی ہے۔</p>
-      <a class="btn" href="register.html">ابھی ڈونر بنیں</a>
+      <h2 data-i18n="elig_h2">خون کون دے سکتا ہے؟</h2>
+      <p data-i18n="elig_p">عمر 18 سے 60 سال، وزن کم از کم 50 کلو، آخری عطیہ کم از کم 3 ماہ پہلے دیا ہو، اور ہیپاٹائٹس بی یا سی نہ ہو۔ عطیے سے پہلے لیب آپ کی صحت ضرور چیک کرتی ہے۔</p>
+      <a class="btn" href="register.html" data-i18n="elig_cta">ابھی ڈونر بنیں</a>
     </div>
   </section>
 
   <section class="card">
-    <h2>ڈونر تلاش کریں</h2>
-    <p class="hint">رازداری: یہاں صرف نام، شہر، بلڈ گروپ اور آخری عطیے کی تاریخ نظر آتی ہے۔ فون نمبر کبھی عوامی طور پر نہیں دکھایا جاتا — ڈونر سے رابطہ ٹیم کے ذریعے ہوتا ہے۔</p>
+    <h2 data-i18n="search_h2">ڈونر تلاش کریں</h2>
+    <p class="hint" data-i18n="search_hint">رازداری: یہاں صرف نام، شہر، بلڈ گروپ اور آخری عطیے کی تاریخ نظر آتی ہے۔ فون نمبر کبھی عوامی طور پر نہیں دکھایا جاتا — ڈونر سے رابطہ ٹیم کے ذریعے ہوتا ہے۔</p>
     <div class="groups-row" id="groups-row">
-      <button type="button" class="group-pill all" data-group="">سب</button>
+      <button type="button" class="group-pill all" data-group="" data-i18n="pill_all">سب</button>
       <button type="button" class="group-pill" data-group="A+">A+</button>
       <button type="button" class="group-pill" data-group="A-">A-</button>
       <button type="button" class="group-pill" data-group="B+">B+</button>
@@ -102,24 +103,24 @@
     <div id="config-note"></div>
     <div class="filters">
       <div>
-        <label for="f-group">بلڈ گروپ</label>
+        <label for="f-group" data-i18n="lbl_group">بلڈ گروپ</label>
         <select id="f-group"></select>
       </div>
       <div>
-        <label for="f-city">شہر</label>
+        <label for="f-city" data-i18n="lbl_city">شہر</label>
         <select id="f-city"></select>
       </div>
     </div>
-    <button class="btn" id="search-btn" type="button">تلاش کریں</button>
+    <button class="btn" id="search-btn" type="button" data-i18n="search_btn">تلاش کریں</button>
     <div id="results" class="donor-grid"></div>
-    <p id="results-empty" class="empty" style="display:none">اس گروپ / شہر کا کوئی ڈونر ابھی رجسٹرڈ نہیں ہے۔ براہِ کرم ٹیم سے رابطہ کریں یا بعد میں دوبارہ دیکھیں۔</p>
+    <p id="results-empty" class="empty" style="display:none" data-i18n="results_empty">اس گروپ / شہر کا کوئی ڈونر ابھی رجسٹرڈ نہیں ہے۔ براہِ کرم ٹیم سے رابطہ کریں یا بعد میں دوبارہ دیکھیں۔</p>
   </section>
 
-  <div class="notice">
+  <div class="notice" data-i18n-html="notice_home">
     <b>اہم:</b> یہ ویب سائٹ خون جمع نہیں کرتی، کوئی فیس نہیں لیتی، اور خون کا لین دین نہیں کرتی۔ یہ صرف مریض اور عطیہ دہندہ کے درمیان رابطے کا ذریعہ ہے۔ خون صرف لائسنس یافتہ لیب یا بلڈ بینک میں لیا اور چیک کیا جاتا ہے۔
   </div>
 
-  <footer>
+  <footer data-i18n-html="footer_home">
     المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ — سخی سرور، ڈیرہ غازی خان<br>
     خدمتِ خلق — اللہ کی رضا کے لیے
   </footer>
@@ -128,7 +129,8 @@
 <div id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="app.js"></script>
-<script src="index.js?v=2"></script>
+<script src="i18n.js?v=1"></script>
+<script src="app.js?v=2"></script>
+<script src="index.js?v=3"></script>
 </body>
 </html>

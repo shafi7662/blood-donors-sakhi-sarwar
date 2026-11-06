@@ -8,19 +8,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
-<body>
+<body data-page="admin">
 <header class="topbar">
   <div class="container">
-    <div class="brand"><span class="brand-mark">🩸</span> ایڈمن پینل
-      <small>المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ</small>
+    <div class="brand"><span class="brand-mark">🩸</span> <span data-i18n="admin_brand">ایڈمن پینل</span>
+      <small data-i18n="admin_brand_sub">المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ</small>
     </div>
     <nav class="main">
-      <a href="index.html">ہوم</a>
-      <a href="register.html">ڈونر بنیں</a>
-      <a href="need-blood.html">خون چاہیے</a>
-      <a href="admin.html" class="active">ایڈمن</a>
+      <a href="index.html" data-i18n="nav_home">ہوم</a>
+      <a href="register.html" data-i18n="nav_register">ڈونر بنیں</a>
+      <a href="need-blood.html" data-i18n="nav_need">خون چاہیے</a>
+      <a href="admin.html" class="active" data-i18n="nav_admin">ایڈمن</a>
+      <button type="button" id="lang-toggle" class="lang-toggle">English</button>
     </nav>
   </div>
 </header>
@@ -29,81 +30,81 @@
 
   <!-- Step 1: simple password gate (light screen only) -->
   <section class="card" id="gate-box">
-    <h2>ایڈمن لاگ ان</h2>
-    <p class="hint">یہ صفحہ صرف ٹیم کے ذمہ دار کے لیے ہے۔</p>
+    <h2 data-i18n="gate_h2">ایڈمن لاگ ان</h2>
+    <p class="hint" data-i18n="gate_hint">یہ صفحہ صرف ٹیم کے ذمہ دار کے لیے ہے۔</p>
     <form id="gate-form">
-      <label for="gate-pass">پاس ورڈ</label>
-      <input type="password" id="gate-pass" required placeholder="ایڈمن پاس ورڈ">
-      <button class="btn" type="submit">کھولیں</button>
+      <label for="gate-pass" data-i18n="lbl_pass">پاس ورڈ</label>
+      <input type="password" id="gate-pass" required placeholder="ایڈمن پاس ورڈ" data-i18n-ph="ph_gate_pass">
+      <button class="btn" type="submit" data-i18n="gate_open">کھولیں</button>
     </form>
-    <p id="gate-error" class="hint" style="color:var(--red); display:none">پاس ورڈ غلط ہے۔</p>
+    <p id="gate-error" class="hint" style="color:var(--red); display:none" data-i18n="gate_error">پاس ورڈ غلط ہے۔</p>
   </section>
 
   <!-- Step 2: Supabase Auth sign-in (real protection lives here + RLS) -->
   <section class="card" id="auth-box" style="display:none">
-    <h2>Supabase ایڈمن سائن ان</h2>
-    <p class="hint">ڈونرز کے فون نمبر اور رپورٹس صرف لاگ ان ایڈمن دیکھ سکتا ہے۔ یہ ای میل / پاس ورڈ وہی ہے جو Supabase Dashboard → Authentication میں ایڈمن صارف کے لیے بنایا گیا تھا (تفصیل README میں)۔</p>
+    <h2 data-i18n="auth_h2">Supabase ایڈمن سائن ان</h2>
+    <p class="hint" data-i18n="auth_hint">ڈونرز کے فون نمبر اور رپورٹس صرف لاگ ان ایڈمن دیکھ سکتا ہے۔ یہ ای میل / پاس ورڈ وہی ہے جو Supabase Dashboard → Authentication میں ایڈمن صارف کے لیے بنایا گیا تھا (تفصیل README میں)۔</p>
     <div id="config-note"></div>
     <form id="auth-form">
-      <label for="auth-email">ای میل</label>
+      <label for="auth-email" data-i18n="lbl_email">ای میل</label>
       <input type="email" id="auth-email" required placeholder="admin@example.com" dir="ltr" style="text-align:right">
-      <label for="auth-pass">پاس ورڈ</label>
-      <input type="password" id="auth-pass" required placeholder="Supabase ایڈمن پاس ورڈ">
-      <button class="btn" type="submit" id="auth-btn">سائن ان</button>
+      <label for="auth-pass" data-i18n="lbl_pass">پاس ورڈ</label>
+      <input type="password" id="auth-pass" required placeholder="Supabase ایڈمن پاس ورڈ" data-i18n-ph="ph_auth_pass">
+      <button class="btn" type="submit" id="auth-btn" data-i18n="auth_signin">سائن ان</button>
     </form>
-    <p id="auth-error" class="hint" style="color:var(--red); display:none">سائن ان ناکام — ای میل / پاس ورڈ چیک کریں۔</p>
+    <p id="auth-error" class="hint" style="color:var(--red); display:none" data-i18n="auth_error">سائن ان ناکام — ای میل / پاس ورڈ چیک کریں۔</p>
   </section>
 
   <!-- Step 3: data -->
   <section id="data-box" style="display:none">
     <div class="card">
-      <h2>رجسٹرڈ ڈونرز <span id="donor-count"></span></h2>
+      <h2><span data-i18n="donors_h2">رجسٹرڈ ڈونرز</span> <span id="donor-count"></span></h2>
       <div class="filters" style="margin-bottom:10px">
         <div>
-          <label for="d-search">تلاش (نام / فون / شہر)</label>
-          <input type="search" id="d-search" placeholder="مثلاً شافی، 0336…، سخی سرور">
+          <label for="d-search" data-i18n="lbl_search">تلاش (نام / فون / شہر)</label>
+          <input type="search" id="d-search" placeholder="مثلاً شافی، 0336…، سخی سرور" data-i18n-ph="ph_search">
         </div>
         <div>
-          <label for="d-group">بلڈ گروپ</label>
+          <label for="d-group" data-i18n="lbl_group">بلڈ گروپ</label>
           <select id="d-group"></select>
         </div>
         <div>
-          <label for="d-city">شہر</label>
+          <label for="d-city" data-i18n="lbl_city">شہر</label>
           <select id="d-city"></select>
         </div>
       </div>
-      <button class="btn small" type="button" id="refresh-donors">تازہ کریں</button>
+      <button class="btn small" type="button" id="refresh-donors" data-i18n="refresh">تازہ کریں</button>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>نام</th><th>گروپ</th><th>شہر</th><th>عمر</th><th>آخری عطیہ</th><th>دن گزرے</th><th>عطیات</th><th>فون</th><th></th></tr></thead>
+          <thead><tr><th data-i18n="th_name">نام</th><th data-i18n="th_group">گروپ</th><th data-i18n="th_city">شہر</th><th data-i18n="th_age">عمر</th><th data-i18n="th_last">آخری عطیہ</th><th data-i18n="th_days">دن گزرے</th><th data-i18n="th_donations">عطیات</th><th data-i18n="th_phone">فون</th><th></th></tr></thead>
           <tbody id="donor-rows"></tbody>
         </table>
       </div>
-      <p id="donor-empty" class="empty" style="display:none">کوئی ڈونر نہیں ملا۔</p>
+      <p id="donor-empty" class="empty" style="display:none" data-i18n="donor_empty">کوئی ڈونر نہیں ملا۔</p>
     </div>
 
     <div class="card">
-      <h2>خون کی درخواستیں <span id="req-count"></span></h2>
+      <h2><span data-i18n="reqs_h2">خون کی درخواستیں</span> <span id="req-count"></span></h2>
       <div class="filters" style="margin-bottom:10px">
         <div>
-          <label for="r-group">بلڈ گروپ</label>
+          <label for="r-group" data-i18n="lbl_group">بلڈ گروپ</label>
           <select id="r-group"></select>
         </div>
       </div>
-      <button class="btn small" type="button" id="refresh-reqs">تازہ کریں</button>
+      <button class="btn small" type="button" id="refresh-reqs" data-i18n="refresh">تازہ کریں</button>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>مریض</th><th>اسپتال</th><th>گروپ</th><th>خون (cc)</th><th>حالت</th><th>رپورٹ</th><th>فون</th><th></th></tr></thead>
+          <thead><tr><th data-i18n="th_patient">مریض</th><th data-i18n="th_hospital">اسپتال</th><th data-i18n="th_group">گروپ</th><th data-i18n="th_blood_cc">خون (cc)</th><th data-i18n="th_status">حالت</th><th data-i18n="th_report">رپورٹ</th><th data-i18n="th_phone">فون</th><th></th></tr></thead>
           <tbody id="req-rows"></tbody>
         </table>
       </div>
-      <p id="req-empty" class="empty" style="display:none">کوئی درخواست نہیں ہے۔</p>
+      <p id="req-empty" class="empty" style="display:none" data-i18n="req_empty">کوئی درخواست نہیں ہے۔</p>
     </div>
 
-    <button class="btn ghost" type="button" id="signout-btn">سائن آؤٹ</button>
+    <button class="btn ghost" type="button" id="signout-btn" data-i18n="signout">سائن آؤٹ</button>
   </section>
 
-  <footer>
+  <footer data-i18n="admin_footer">
     یہ پینل صرف ٹیم کے ذمہ دار کے لیے ہے — ڈونرز کی تفصیل کسی سے شیئر نہ کریں۔
   </footer>
 </div>
@@ -111,7 +112,8 @@
 <div id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="app.js"></script>
-<script src="admin.js?v=3"></script>
+<script src="i18n.js?v=1"></script>
+<script src="app.js?v=2"></script>
+<script src="admin.js?v=4"></script>
 </body>
 </html>

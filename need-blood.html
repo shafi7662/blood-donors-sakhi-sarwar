@@ -8,67 +8,68 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
-<body>
+<body data-page="need">
 <header class="topbar">
   <div class="container">
-    <div class="brand"><span class="brand-mark">🩸</span> المصباح اور المصطفیٰ بلڈ ڈونیشن
-      <small>سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
+    <div class="brand"><span class="brand-mark">🩸</span> <span data-i18n="brand_name">المصباح اور المصطفیٰ بلڈ ڈونیشن</span>
+      <small data-i18n="brand_sub">سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
     </div>
     <nav class="main">
-      <a href="index.html">ہوم</a>
-      <a href="register.html">ڈونر بنیں</a>
-      <a href="need-blood.html" class="active">خون چاہیے</a>
-      <a href="admin.html">ایڈمن</a>
+      <a href="index.html" data-i18n="nav_home">ہوم</a>
+      <a href="register.html" data-i18n="nav_register">ڈونر بنیں</a>
+      <a href="need-blood.html" class="active" data-i18n="nav_need">خون چاہیے</a>
+      <a href="admin.html" data-i18n="nav_admin">ایڈمن</a>
+      <button type="button" id="lang-toggle" class="lang-toggle">English</button>
     </nav>
   </div>
 </header>
 
 <div class="container">
   <section class="card">
-    <h2>خون کی درخواست</h2>
-    <p>مریض کی HB رپورٹ اور بلڈ گروپ بتائیں — ٹیم جتنی cc خون درکار ہوگا، اتنے کا انتظام کرے گی۔</p>
-    <div class="notice info">
+    <h2 data-i18n="need_h2">خون کی درخواست</h2>
+    <p data-i18n="need_intro">مریض کی HB رپورٹ اور بلڈ گروپ بتائیں — ٹیم جتنی cc خون درکار ہوگا، اتنے کا انتظام کرے گی۔</p>
+    <div class="notice info" data-i18n-html="need_report_note">
       <b>رپورٹ کے بارے میں:</b> آپ کی اپ لوڈ کردہ رپورٹ ٹیم کے ایڈمن پینل میں محفوظ ہو جائے گی اور ٹیم وہیں سے دیکھ/ڈاؤن لوڈ کر لے گی۔ WhatsApp کے لنک کے ساتھ فائل خودکار طور پر نہیں جاتی — اس لیے رپورٹ یہیں اپ لوڈ کرنا ضروری ہے۔
     </div>
     <div id="config-note"></div>
 
     <form id="request-form">
-      <label for="patient">مریض کا نام <span class="required">*</span></label>
-      <input type="text" id="patient" required maxlength="80" placeholder="مریض کا نام">
+      <label for="patient"><span data-i18n="lbl_patient">مریض کا نام</span> <span class="required">*</span></label>
+      <input type="text" id="patient" required maxlength="80" placeholder="مریض کا نام" data-i18n-ph="ph_patient">
 
-      <label for="hospital">اسپتال <span class="required">*</span></label>
-      <input type="text" id="hospital" required maxlength="120" placeholder="مثلاً حیدر میڈی کیئر اسپتال، سخی سرور">
+      <label for="hospital"><span data-i18n="lbl_hospital">اسپتال</span> <span class="required">*</span></label>
+      <input type="text" id="hospital" required maxlength="120" placeholder="مثلاً حیدر میڈی کیئر اسپتال، سخی سرور" data-i18n-ph="ph_hospital">
 
-      <label for="city">شہر <span class="required">*</span></label>
+      <label for="city"><span data-i18n="lbl_city">شہر</span> <span class="required">*</span></label>
       <select id="city" required></select>
 
-      <label for="group">کون سا بلڈ گروپ چاہیے؟ <span class="required">*</span></label>
+      <label for="group"><span data-i18n="lbl_group_need">کون سا بلڈ گروپ چاہیے؟</span> <span class="required">*</span></label>
       <select id="group" required></select>
 
-      <label for="cc">کتنا خون چاہیے (cc)؟ <span class="required">*</span></label>
+      <label for="cc"><span data-i18n="lbl_cc">کتنا خون چاہیے (cc)؟</span> <span class="required">*</span></label>
       <input type="number" id="cc" required min="50" max="5000" step="50" value="400" dir="ltr" style="text-align:right">
-      <p class="hint">ڈاکٹر جتنی cc بتائے، اتنی لکھیں — مثلاً 400cc (1 یونٹ) یا 700cc (تقریباً 2 یونٹ)۔ 1 یونٹ ≈ 400cc۔</p>
+      <p class="hint" data-i18n="cc_hint">ڈاکٹر جتنی cc بتائے، اتنی لکھیں — مثلاً 400cc (1 یونٹ) یا 700cc (تقریباً 2 یونٹ)۔ 1 یونٹ ≈ 400cc۔</p>
 
-      <label for="report">HB رپورٹ (تصویر یا PDF) <span class="required">*</span></label>
+      <label for="report"><span data-i18n="lbl_report">HB رپورٹ (تصویر یا PDF)</span> <span class="required">*</span></label>
       <input type="file" id="report" required accept="image/*,.pdf">
-      <p class="hint">رپورٹ کی واضح تصویر یا PDF اپ لوڈ کریں (زیادہ سے زیادہ 5 MB)۔</p>
+      <p class="hint" data-i18n="report_hint">رپورٹ کی واضح تصویر یا PDF اپ لوڈ کریں (زیادہ سے زیادہ 5 MB)۔</p>
 
-      <label for="phone">رابطہ نمبر (درخواست دہندہ) <span class="required">*</span></label>
-      <input type="tel" id="phone" required maxlength="15" placeholder="مثلاً 03001234567" dir="ltr" style="text-align:right">
+      <label for="phone"><span data-i18n="lbl_req_phone">رابطہ نمبر (درخواست دہندہ)</span> <span class="required">*</span></label>
+      <input type="tel" id="phone" required maxlength="15" placeholder="مثلاً 03001234567" data-i18n-ph="ph_phone" dir="ltr" style="text-align:right">
 
-      <button class="btn" type="submit" id="submit-btn">درخواست بھیجیں</button>
+      <button class="btn" type="submit" id="submit-btn" data-i18n="need_submit">درخواست بھیجیں</button>
     </form>
 
     <div id="success" class="notice info" style="display:none"></div>
   </section>
 
-  <div class="notice">
+  <div class="notice" data-i18n-html="need_notice">
     <b>اہم:</b> خون صرف لائسنس یافتہ لیب یا بلڈ بینک سے لیا اور چیک کیا جاتا ہے۔ یہ ویب سائٹ خون جمع نہیں کرتی اور کوئی فیس نہیں لیتی۔
   </div>
 
-  <footer>
+  <footer data-i18n="footer_short">
     المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ — سخی سرور، ڈیرہ غازی خان
   </footer>
 </div>
@@ -76,7 +77,8 @@
 <div id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="app.js"></script>
-<script src="need-blood.js?v=3"></script>
+<script src="i18n.js?v=1"></script>
+<script src="app.js?v=2"></script>
+<script src="need-blood.js?v=4"></script>
 </body>
 </html>

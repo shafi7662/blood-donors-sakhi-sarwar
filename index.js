@@ -4,9 +4,15 @@
   var citySel = $("f-city");
   var resultsEl = $("results");
   var emptyEl = $("results-empty");
+  var lastDonors = [];
 
-  fillGroupSelect(groupSel, "— تمام گروپ —", true);
-  fillCitySelect(citySel, "— تمام شہر —");
+  function fillSelects() {
+    var g = groupSel.value, c = citySel.value;
+    fillGroupSelect(groupSel, t("all_groups"), true);
+    fillCitySelect(citySel, t("all_cities"));
+    groupSel.value = g; citySel.value = c;
+  }
+  fillSelects();
   $("config-note").innerHTML = configWarningBox();
 
   function esc(s) {
@@ -16,6 +22,7 @@
   }
 
   function render(donors) {
+    lastDonors = donors || [];
     resultsEl.innerHTML = "";
     if (!donors || donors.length === 0) {
       emptyEl.style.display = "block";
@@ -28,10 +35,10 @@
       div.innerHTML =
         '<span class="group">' + esc(d.blood_group) + "</span> " +
         '<span class="name">' + esc(d.name) + "</span><br>" +
-        '<span class="meta">' + esc(d.city) +
-        (d.last_donation_date ? " — آخری عطیہ: " + esc(d.last_donation_date) : " — پہلی بار عطیہ کے لیے تیار") +
+        '<span class="meta">' + esc(cityLabel(d.city)) +
+        (d.last_donation_date ? " — " + esc(t("donor_last")) + esc(d.last_donation_date) : " — " + esc(t("donor_first"))) +
         "</span><br>" +
-        '<span class="meta">رابطے کے لیے ٹیم سے کہیں — فون نمبر یہاں نہیں دکھایا جاتا۔</span>';
+        '<span class="meta">' + esc(t("donor_contact")) + "</span>";
       resultsEl.appendChild(div);
     });
   }
@@ -39,7 +46,7 @@
   async function search() {
     if (!SUPABASE_READY || !supabaseClient) {
       render([]);
-      showToast("ڈونر لسٹ ابھی سیٹ اپ ہو رہی ہے — براہِ کرم ٹیم سے WhatsApp پر رابطہ کریں۔");
+      showToast(t("toast_list_setup"));
       return;
     }
     var q = supabaseClient.from("public_donors").select("*").order("created_at", { ascending: false });
@@ -49,7 +56,7 @@
     if (res.error) {
       console.error(res.error);
       render([]);
-      showToast("ڈونر لسٹ لوڈ نہیں ہو سکی — بعد میں دوبارہ کوشش کریں۔");
+      showToast(t("toast_list_fail"));
       return;
     }
     render(res.data);
@@ -70,6 +77,13 @@
       search();
     });
   });
+
+  // Language switched: refill translated selects and re-render cached results
+  window.__onLangChange = function () {
+    fillSelects();
+    $("config-note").innerHTML = configWarningBox();
+    render(lastDonors);
+  };
 
   search();
 })();

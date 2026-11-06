@@ -9,21 +9,29 @@
   fillGroupSelect($("group"));
   $("config-note").innerHTML = configWarningBox();
 
+  window.__onLangChange = function () {
+    var c = $("city").value, g = $("group").value;
+    fillCitySelect($("city"));
+    fillGroupSelect($("group"));
+    $("city").value = c; $("group").value = g;
+    $("config-note").innerHTML = configWarningBox();
+  };
+
   $("request-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     var btn = $("submit-btn");
     btn.disabled = true;
 
     var file = $("report").files[0];
-    if (!file) { showToast("براہِ کرم HB رپورٹ اپ لوڈ کریں۔"); btn.disabled = false; return; }
+    if (!file) { showToast(t("toast_no_file")); btn.disabled = false; return; }
     if (file.size > 5 * 1024 * 1024) {
-      showToast("رپورٹ 5 MB سے بڑی ہے — چھوٹی فائل اپ لوڈ کریں۔");
+      showToast(t("toast_big_file"));
       btn.disabled = false; return;
     }
 
     var cc = parseInt($("cc").value, 10);
     if (!cc || cc < 50 || cc > 5000) {
-      showToast("براہِ کرم خون کی مقدار cc میں لکھیں (50 سے 5000 تک)۔");
+      showToast(t("toast_cc_range"));
       btn.disabled = false; return;
     }
     var units = Math.ceil(cc / 400); // 1 یونٹ ≈ 400cc — صرف اشارے کے لیے
@@ -41,7 +49,7 @@
     };
 
     if (!SUPABASE_READY || !supabaseClient) {
-      showToast("سیٹ اپ مکمل نہیں ہے — براہِ کرم رپورٹ WhatsApp پر براہِ راست بھیجیں۔");
+      showToast(t("toast_setup_wa"));
       openWhatsApp(data, false, null);
       btn.disabled = false;
       return;
@@ -60,7 +68,7 @@
     });
     if (up.error) {
       console.error(up.error);
-      showToast("رپورٹ اپ لوڈ نہیں ہو سکی — انٹرنیٹ چیک کر کے دوبارہ کوشش کریں۔");
+      showToast(t("toast_up_fail"));
       btn.disabled = false;
       return;
     }
@@ -70,7 +78,7 @@
     var ins = await supabaseClient.from("blood_requests").insert([data]);
     if (ins.error) {
       console.error(ins.error);
-      showToast("درخواست محفوظ نہیں ہو سکی — دوبارہ کوشش کریں۔");
+      showToast(t("toast_save_fail"));
       btn.disabled = false;
       return;
     }
@@ -91,7 +99,7 @@
 
     var ok = $("success");
     ok.style.display = "block";
-    ok.innerHTML = "<b>شکریہ!</b> آپ کی درخواست اور HB رپورٹ محفوظ ہو گئی ہے اور ٹیم کو WhatsApp پر اطلاع بھیج دی گئی ہے۔ ٹیم جلد آپ سے رابطہ کرے گی۔";
+    ok.innerHTML = t("need_success");
     $("request-form").reset();
     btn.disabled = false;
     window.scrollTo(0, ok.offsetTop - 20);
@@ -99,18 +107,18 @@
 
   function openWhatsApp(data, reportSaved, reportLink) {
     var text =
-      "السلام علیکم! مریض کے لیے خون کی ضرورت ہے۔\n" +
-      "مریض: " + data.patient_name + "\n" +
-      "اسپتال: " + data.hospital + "\n" +
-      "شہر: " + data.city + "\n" +
-      "بلڈ گروپ: " + data.blood_group + "\n" +
-      "خون: " + data.cc_needed + " cc (تقریباً " + data.units_needed + " یونٹ)\n" +
-      "رابطہ: " + data.requester_phone + "\n" +
+      t("wa_need_greeting") + "\n" +
+      t("wa_patient") + data.patient_name + "\n" +
+      t("wa_hospital") + data.hospital + "\n" +
+      t("wa_city") + cityLabel(data.city) + "\n" +
+      t("wa_group") + data.blood_group + "\n" +
+      t("wa_blood") + data.cc_needed + " cc (" + t("wa_approx") + " " + data.units_needed + " " + t("wa_units") + ")\n" +
+      t("wa_contact") + data.requester_phone + "\n" +
       (reportSaved
         ? (reportLink
-          ? "HB رپورٹ: " + reportLink + "\n(یہ لنک 7 دن تک کام کرے گا۔)"
-          : "HB رپورٹ اپ لوڈ کر دی ہے — براہِ کرم ایڈمن پینل سے دیکھ لیں۔")
-        : "HB رپورٹ میں WhatsApp پر الگ سے بھیج رہا/رہی ہوں۔");
+          ? t("wa_report_link") + reportLink + "\n" + t("wa_report_7d")
+          : t("wa_report_admin"))
+        : t("wa_report_sep"));
     window.open(waLink(SUPABASE_CONFIG.TEAM_WHATSAPP, text), "_blank");
   }
 })();

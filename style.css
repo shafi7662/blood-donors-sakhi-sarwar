@@ -335,3 +335,25 @@ footer {
   .drop, .hero-cta .btn, .hero::after, .marquee-track { animation: none; }
   .team, .group-pill { transition: none; }
 }
+
+/* ---------- Language toggle ---------- */
+.lang-toggle {
+  background: #fff; color: var(--red); border: 1px solid var(--red);
+  border-radius: 999px; padding: 2px 14px; font-family: inherit; font-weight: bold;
+  cursor: pointer; line-height: 2; font-size: 0.95em;
+}
+.lang-toggle:hover { background: var(--red-light); }
+
+/* ---------- English mode: LTR, Latin font, tighter lines ---------- */
+body.lang-en { font-family: "Segoe UI", Arial, sans-serif; line-height: 1.6; }
+body.lang-en .brand { line-height: 1.4; }
+body.lang-en .card h2 { border-right: none; border-left: 4px solid var(--red); padding-right: 0; padding-left: 10px; line-height: 1.4; }
+body.lang-en .hero h1 { line-height: 1.3; }
+body.lang-en .notice { line-height: 1.6; }
+body.lang-en .marquee-track { line-height: 1.6; }
+body.lang-en .btn { line-height: 1.5; }
+body.lang-en input, body.lang-en select, body.lang-en textarea { line-height: 1.5; font-family: inherit; }
+body.lang-en .donor { line-height: 1.6; }
+body.lang-en footer { line-height: 1.6; }
+body.lang-en .steps li { line-height: 1.7; }
+body.lang-en #toast { line-height: 1.5; }

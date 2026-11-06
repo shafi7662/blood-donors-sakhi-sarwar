@@ -32,21 +32,28 @@ function teamWhatsAppConfigured() {
 // Config na mukammal ho to user ko saaf batao (khamoshi se fail na ho)
 function configWarningBox() {
   if (SUPABASE_READY) return "";
-  return '<div class="notice">نوٹ: ویب سائٹ کی سیٹ اپ ابھی مکمل نہیں ہوئی ' +
-    "(Supabase کی تفصیل supabase-config.js میں بھرنا باقی ہے)۔ " +
-    "فارم پھر بھی WhatsApp کے ذریعے ٹیم تک پہنچ جائے گا۔</div>";
+  return '<div class="notice">' + t("config_warn") + "</div>";
 }
 
+// Cities: value stays the Urdu name (canonical — stored in the DB),
+// display text follows the current language.
 var CITIES = [
-  "سخی سرور",
-  "ڈیرہ غازی خان",
-  "تونسہ",
-  "کوٹ چھٹہ",
-  "جام پور",
-  "راجن پور",
-  "ملتان",
-  "دیگر"
+  { v: "سخی سرور", k: "city_sakhi" },
+  { v: "ڈیرہ غازی خان", k: "city_dgk" },
+  { v: "تونسہ", k: "city_taunsa" },
+  { v: "کوٹ چھٹہ", k: "city_kotchutta" },
+  { v: "جام پور", k: "city_jampur" },
+  { v: "راجن پور", k: "city_rajanpur" },
+  { v: "ملتان", k: "city_multan" },
+  { v: "دیگر", k: "city_other" }
 ];
+
+function cityLabel(urName) {
+  for (var i = 0; i < CITIES.length; i++) {
+    if (CITIES[i].v === urName) return t(CITIES[i].k);
+  }
+  return urName;
+}
 
 var BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -54,11 +61,11 @@ function fillCitySelect(selectEl, placeholder) {
   selectEl.innerHTML = "";
   var opt0 = document.createElement("option");
   opt0.value = "";
-  opt0.textContent = placeholder || "— شہر منتخب کریں —";
+  opt0.textContent = placeholder || t("pick_city");
   selectEl.appendChild(opt0);
   CITIES.forEach(function (c) {
     var o = document.createElement("option");
-    o.value = c; o.textContent = c;
+    o.value = c.v; o.textContent = t(c.k);
     selectEl.appendChild(o);
   });
 }
@@ -67,7 +74,7 @@ function fillGroupSelect(selectEl, placeholder, allLabel) {
   selectEl.innerHTML = "";
   var opt0 = document.createElement("option");
   opt0.value = "";
-  opt0.textContent = placeholder || (allLabel ? "— تمام گروپ —" : "— گروپ منتخب کریں —");
+  opt0.textContent = placeholder || (allLabel ? t("all_groups") : t("pick_group"));
   selectEl.appendChild(opt0);
   BLOOD_GROUPS.forEach(function (g) {
     var o = document.createElement("option");
