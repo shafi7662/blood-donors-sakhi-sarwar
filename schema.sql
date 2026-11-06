@@ -13,6 +13,7 @@ create table if not exists public.donors (
   phone text not null,
   age int not null check (age between 18 and 60),
   last_donation_date date,
+  donation_count int not null default 0,
   consent boolean not null default false,
   created_at timestamptz not null default now()
 );
@@ -91,6 +92,24 @@ create policy "Admin can update requests"
   on public.blood_requests for update
   to authenticated
   using (true) with check (true);
+
+-- ---------- v2 (2026-11-06): ایڈمن مینجمنٹ ----------
+-- donation_count: عطیات کی تعداد (رجسٹریشن پر 1 اگر آخری عطیہ کی تاریخ دی گئی ہو، ورنہ 0؛
+-- ایڈمن پینل کا "عطیہ درج کریں" بٹن ہر نئے عطیے پر +1 کرتا ہے اور آخری تاریخ آج کی کر دیتا ہے)۔
+alter table public.donors add column if not exists donation_count int not null default 0;
+
+-- ایڈمن ڈونر / درخواست حذف کر سکتا ہے (ایڈمن پینل کا حذف بٹن)
+drop policy if exists "Admin can delete donors" on public.donors;
+create policy "Admin can delete donors"
+  on public.donors for delete
+  to authenticated
+  using (true);
+
+drop policy if exists "Admin can delete requests" on public.blood_requests;
+create policy "Admin can delete requests"
+  on public.blood_requests for delete
+  to authenticated
+  using (true);
 
 -- ---------- Storage bucket: HB reports (private) ----------
 insert into storage.buckets (id, name, public)

@@ -60,6 +60,10 @@
       <h2>رجسٹرڈ ڈونرز <span id="donor-count"></span></h2>
       <div class="filters" style="margin-bottom:10px">
         <div>
+          <label for="d-search">تلاش (نام / فون / شہر)</label>
+          <input type="search" id="d-search" placeholder="مثلاً شافی، 0336…، سخی سرور">
+        </div>
+        <div>
           <label for="d-group">بلڈ گروپ</label>
           <select id="d-group"></select>
         </div>
@@ -71,7 +75,7 @@
       <button class="btn small" type="button" id="refresh-donors">تازہ کریں</button>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>نام</th><th>گروپ</th><th>شہر</th><th>عمر</th><th>آخری عطیہ</th><th>فون</th><th></th></tr></thead>
+          <thead><tr><th>نام</th><th>گروپ</th><th>شہر</th><th>عمر</th><th>آخری عطیہ</th><th>دن گزرے</th><th>عطیات</th><th>فون</th><th></th></tr></thead>
           <tbody id="donor-rows"></tbody>
         </table>
       </div>
@@ -80,6 +84,12 @@
 
     <div class="card">
       <h2>خون کی درخواستیں <span id="req-count"></span></h2>
+      <div class="filters" style="margin-bottom:10px">
+        <div>
+          <label for="r-group">بلڈ گروپ</label>
+          <select id="r-group"></select>
+        </div>
+      </div>
       <button class="btn small" type="button" id="refresh-reqs">تازہ کریں</button>
       <div class="table-wrap">
         <table>

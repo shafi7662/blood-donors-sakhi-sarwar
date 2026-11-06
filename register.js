@@ -16,6 +16,7 @@
       phone: $("phone").value.trim(),
       age: parseInt($("age").value, 10),
       last_donation_date: $("last-donation").value || null,
+      donation_count: $("last-donation").value ? 1 : 0,
       consent: $("consent").checked
     };
 
