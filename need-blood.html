@@ -8,19 +8,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body data-page="need">
 <header class="topbar">
   <div class="container">
-    <div class="brand"><span class="brand-mark">🩸</span> <span data-i18n="brand_name">المصباح اور المصطفیٰ بلڈ ڈونیشن</span>
-      <small data-i18n="brand_sub">سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
+    <div class="brand">
+      <span class="brand-mark">🩸</span>
+      <div class="brand-text">
+        <span data-i18n="brand_name">المصباح اور المصطفیٰ بلڈ ڈونیشن</span>
+        <small data-i18n="brand_sub">سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
+      </div>
     </div>
     <nav class="main">
       <a href="index.html" data-i18n="nav_home">ہوم</a>
       <a href="register.html" data-i18n="nav_register">ڈونر بنیں</a>
       <a href="need-blood.html" class="active" data-i18n="nav_need">خون چاہیے</a>
-      <a href="admin.html" data-i18n="nav_admin">ایڈمن</a>
       <button type="button" id="lang-toggle" class="lang-toggle">English</button>
     </nav>
   </div>
@@ -42,11 +45,16 @@
       <label for="hospital"><span data-i18n="lbl_hospital">اسپتال</span> <span class="required">*</span></label>
       <input type="text" id="hospital" required maxlength="120" placeholder="مثلاً حیدر میڈی کیئر اسپتال، سخی سرور" data-i18n-ph="ph_hospital">
 
-      <label for="city"><span data-i18n="lbl_city">شہر</span> <span class="required">*</span></label>
-      <select id="city" required></select>
-
-      <label for="group"><span data-i18n="lbl_group_need">کون سا بلڈ گروپ چاہیے؟</span> <span class="required">*</span></label>
-      <select id="group" required></select>
+      <div class="filters" style="margin-top: 14px;">
+        <div>
+          <label for="city"><span data-i18n="lbl_city">شہر</span> <span class="required">*</span></label>
+          <select id="city" required></select>
+        </div>
+        <div>
+          <label for="group"><span data-i18n="lbl_group_need">کون سا بلڈ گروپ چاہیے؟</span> <span class="required">*</span></label>
+          <select id="group" required></select>
+        </div>
+      </div>
 
       <label for="cc"><span data-i18n="lbl_cc">کتنا خون چاہیے (cc)؟</span> <span class="required">*</span></label>
       <input type="number" id="cc" required min="50" max="5000" step="50" value="400" dir="ltr" style="text-align:right">
@@ -59,7 +67,7 @@
       <label for="phone"><span data-i18n="lbl_req_phone">رابطہ نمبر (درخواست دہندہ)</span> <span class="required">*</span></label>
       <input type="tel" id="phone" required maxlength="15" placeholder="مثلاً 03001234567" data-i18n-ph="ph_phone" dir="ltr" style="text-align:right">
 
-      <button class="btn" type="submit" id="submit-btn" data-i18n="need_submit">درخواست بھیجیں</button>
+      <button class="btn green full" type="submit" id="submit-btn" data-i18n="need_submit">درخواست بھیجیں</button>
     </form>
 
     <div id="success" class="notice info" style="display:none"></div>
@@ -69,8 +77,11 @@
     <b>اہم:</b> خون صرف لائسنس یافتہ لیب یا بلڈ بینک سے لیا اور چیک کیا جاتا ہے۔ یہ ویب سائٹ خون جمع نہیں کرتی اور کوئی فیس نہیں لیتی۔
   </div>
 
-  <footer data-i18n="footer_short">
-    المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ — سخی سرور، ڈیرہ غازی خان
+  <footer>
+    <div data-i18n="footer_short">
+      المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ — سخی سرور، ڈیرہ غازی خان
+    </div>
+    <a href="admin.html" class="footer-admin-link" data-i18n="nav_admin">ایڈمن</a>
   </footer>
 </div>
 
