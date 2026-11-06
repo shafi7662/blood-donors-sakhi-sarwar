@@ -1,0 +1,44 @@
+// ============================================================
+//  Blood Donor Website — Sakhi Sarwar
+//  SUPABASE CONFIG — ایک ہی فائل میں تمام سیٹنگز
+//  TODO والی ہر لائن میں اصل ویلیو بھرنا لازمی ہے،
+//  ورنہ ویب سائٹ ڈیمو حالت میں رہے گی (ڈیٹا سیو نہیں ہوگا)۔
+// ============================================================
+
+const SUPABASE_CONFIG = {
+  // TODO: Supabase Dashboard → Settings → API → Project URL
+  // مثال: "https://abcdefghijklm.supabase.co"
+  SUPABASE_URL: "https://kzdicpnccahtapxjsmog.supabase.co",
+
+  // TODO: Supabase Dashboard → Settings → API → anon public key
+  // یہ "public" key ہے — اسے براؤزر میں رکھنا محفوظ ہے۔
+  // service_role key یہاں کبھی نہ لکھیں!
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6ZGljcG5jY2FodGFweGpzbW9nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM5NDE5OTYsImV4cCI6MjEwOTUxNzk5Nn0.WKAOmKa9fC11Qnnp-NLzanx3euwRfl2he4t1lu5pqyA",
+
+  // ٹیم کا WhatsApp نمبر — بغیر + کے، ملک کے کوڈ کے ساتھ
+  // فی الحال مالک (شفیع) کا اپنا نمبر ہے — تمام ٹیسٹ اور درخواستیں
+  // اسی نمبر پر جائیں گی۔ جب دونوں ٹیمیں سائٹ پسند کر لیں تو
+  // یہاں صرف یہ ایک لائن بدل کر ان کا نمبر لگا دیں —
+  // نمبر صرف اسی جگہ رکھا گیا ہے، باقی سائٹ اسی کو پڑھتی ہے۔
+  TEAM_WHATSAPP: "923367050512",
+
+  // TODO: ایڈمن پینل (admin.html) کھولنے کا پاس ورڈ — پہلے ہی بدل دیں
+  // نوٹ: یہ صرف ایک ہلکی سی رکاوٹ ہے۔ اصل حفاظت Supabase Auth
+  // (ایڈمن لاگ ان) + RLS پالیسیز سے ہے — تفصیل README میں دیکھیں۔
+  ADMIN_PASSWORD: "BloodAdmin@2026"
+};
+
+// ---- Supabase client (اگر config مکمل ہو تو) ----
+const SUPABASE_READY =
+  typeof SUPABASE_CONFIG.SUPABASE_URL === "string" &&
+  SUPABASE_CONFIG.SUPABASE_URL.indexOf("https://") === 0 &&
+  SUPABASE_CONFIG.SUPABASE_URL.indexOf("YOUR-PROJECT-REF") === -1 &&
+  SUPABASE_CONFIG.SUPABASE_ANON_KEY !== "YOUR-ANON-KEY";
+
+let supabaseClient = null;
+if (SUPABASE_READY && typeof supabase !== "undefined") {
+  supabaseClient = supabase.createClient(
+    SUPABASE_CONFIG.SUPABASE_URL,
+    SUPABASE_CONFIG.SUPABASE_ANON_KEY
+  );
+}

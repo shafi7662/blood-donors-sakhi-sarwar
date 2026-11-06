@@ -1,0 +1,193 @@
+/* ============================================================
+   Blood Donor Website — Sakhi Sarwar
+   Shared styles — mobile-first, RTL, light & fast
+   ============================================================ */
+
+:root {
+  --red: #b91c1c;
+  --red-dark: #7f1d1d;
+  --red-light: #fef2f2;
+  --green: #15803d;
+  --ink: #1f2937;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --card: #ffffff;
+  --bg: #faf7f5;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: "Noto Nastaliq Urdu", "Noto Naskh Arabic", Tahoma, Arial, sans-serif;
+  line-height: 2.1;
+  color: var(--ink);
+  background: var(--bg);
+  font-size: 17px;
+}
+
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container { max-width: 860px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* ---------- Header / Nav ---------- */
+header.topbar {
+  background: var(--red);
+  color: #fff;
+  padding: 14px 0 10px;
+}
+header.topbar .container { padding-bottom: 0; }
+.brand { font-size: 1.35em; font-weight: bold; line-height: 1.6; }
+.brand small { display: block; font-size: 0.62em; font-weight: normal; opacity: 0.9; }
+nav.main { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+nav.main a {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  padding: 2px 14px;
+  border-radius: 999px;
+  font-size: 0.92em;
+  line-height: 2;
+}
+nav.main a.active { background: #fff; color: var(--red); font-weight: bold; }
+nav.main a:hover { text-decoration: none; background: rgba(255, 255, 255, 0.32); }
+
+/* ---------- Hero / cards ---------- */
+.hero {
+  background: var(--red-light);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin: 20px 0;
+}
+.hero h1 { margin: 0 0 4px; font-size: 1.5em; line-height: 1.8; color: var(--red-dark); }
+.hero p { margin: 0; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 16px 0;
+}
+.card h2 { margin: 0 0 6px; font-size: 1.2em; color: var(--red-dark); line-height: 1.8; }
+.card h3 { margin: 0 0 4px; font-size: 1.05em; line-height: 1.8; }
+.card p { margin: 4px 0; }
+
+.team-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 600px) { .team-grid { grid-template-columns: 1fr 1fr; } }
+.team { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; background: #fff; }
+.team b { color: var(--red-dark); }
+
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 8px 0; }
+.steps li { position: relative; padding-right: 44px; margin: 12px 0; }
+.steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute; right: 0; top: 2px;
+  width: 30px; height: 30px; line-height: 30px;
+  text-align: center; border-radius: 50%;
+  background: var(--red); color: #fff; font-weight: bold;
+}
+
+/* ---------- Forms ---------- */
+form label { display: block; font-weight: bold; margin: 14px 0 2px; }
+form input[type="text"],
+form input[type="tel"],
+form input[type="number"],
+form input[type="date"],
+form input[type="password"],
+form input[type="email"],
+form select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1em;
+  font-family: inherit;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  line-height: 1.8;
+}
+form input:focus, form select:focus { outline: 2px solid var(--red); border-color: var(--red); }
+.checkbox { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0; font-weight: normal; line-height: 1.9; }
+.checkbox input { margin-top: 8px; width: 18px; height: 18px; }
+.hint { font-size: 0.88em; color: var(--muted); line-height: 1.9; }
+.required { color: var(--red); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 26px;
+  font-size: 1.05em;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 2;
+  margin-top: 10px;
+}
+.btn:hover { background: var(--red-dark); text-decoration: none; }
+.btn.green { background: var(--green); }
+.btn.ghost { background: #fff; color: var(--red); border: 2px solid var(--red); }
+.btn.small { padding: 2px 16px; font-size: 0.9em; margin-top: 0; }
+.btn:disabled { opacity: 0.55; cursor: wait; }
+
+/* ---------- Search results ---------- */
+.filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.donor-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+@media (min-width: 600px) { .donor-grid { grid-template-columns: 1fr 1fr; } }
+.donor {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #fff;
+  line-height: 1.9;
+}
+.donor .group {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-weight: bold;
+  line-height: 2;
+}
+.donor .name { font-weight: bold; font-size: 1.08em; }
+.donor .meta { color: var(--muted); font-size: 0.9em; }
+.empty { color: var(--muted); text-align: center; padding: 18px 0; }
+
+/* ---------- Tables (admin) ---------- */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.92em; line-height: 1.9; }
+th, td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: right; vertical-align: top; }
+th { color: var(--red-dark); white-space: nowrap; }
+.badge {
+  display: inline-block; padding: 0 10px; border-radius: 999px;
+  font-size: 0.85em; background: #fef3c7; color: #92400e;
+}
+.badge.done { background: #dcfce7; color: #166534; }
+
+/* ---------- Notices ---------- */
+.notice {
+  border: 1px solid #fcd34d;
+  background: #fffbeb;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin: 16px 0;
+  line-height: 1.9;
+}
+.notice.info { border-color: #93c5fd; background: #eff6ff; }
+.notice.error { border-color: #fca5a5; background: var(--red-light); }
+#toast {
+  position: fixed; bottom: 18px; right: 50%; transform: translateX(50%);
+  background: var(--ink); color: #fff; padding: 10px 20px;
+  border-radius: 999px; font-size: 0.95em; line-height: 1.8;
+  display: none; z-index: 50; max-width: 92vw; text-align: center;
+}
+footer { color: var(--muted); font-size: 0.88em; text-align: center; margin-top: 30px; line-height: 1.9; }

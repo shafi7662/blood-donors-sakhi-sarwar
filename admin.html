@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ایڈمن پینل — المصباح اور المصطفیٰ بلڈ ڈونیشن</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand">ایڈمن پینل
+      <small>المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ</small>
+    </div>
+    <nav class="main">
+      <a href="index.html">ہوم</a>
+      <a href="register.html">ڈونر بنیں</a>
+      <a href="need-blood.html">خون چاہیے</a>
+      <a href="admin.html" class="active">ایڈمن</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Step 1: simple password gate (light screen only) -->
+  <section class="card" id="gate-box">
+    <h2>ایڈمن لاگ ان</h2>
+    <p class="hint">یہ صفحہ صرف ٹیم کے ذمہ دار کے لیے ہے۔</p>
+    <form id="gate-form">
+      <label for="gate-pass">پاس ورڈ</label>
+      <input type="password" id="gate-pass" required placeholder="ایڈمن پاس ورڈ">
+      <button class="btn" type="submit">کھولیں</button>
+    </form>
+    <p id="gate-error" class="hint" style="color:var(--red); display:none">پاس ورڈ غلط ہے۔</p>
+  </section>
+
+  <!-- Step 2: Supabase Auth sign-in (real protection lives here + RLS) -->
+  <section class="card" id="auth-box" style="display:none">
+    <h2>Supabase ایڈمن سائن ان</h2>
+    <p class="hint">ڈونرز کے فون نمبر اور رپورٹس صرف لاگ ان ایڈمن دیکھ سکتا ہے۔ یہ ای میل / پاس ورڈ وہی ہے جو Supabase Dashboard → Authentication میں ایڈمن صارف کے لیے بنایا گیا تھا (تفصیل README میں)۔</p>
+    <div id="config-note"></div>
+    <form id="auth-form">
+      <label for="auth-email">ای میل</label>
+      <input type="email" id="auth-email" required placeholder="admin@example.com" dir="ltr" style="text-align:right">
+      <label for="auth-pass">پاس ورڈ</label>
+      <input type="password" id="auth-pass" required placeholder="Supabase ایڈمن پاس ورڈ">
+      <button class="btn" type="submit" id="auth-btn">سائن ان</button>
+    </form>
+    <p id="auth-error" class="hint" style="color:var(--red); display:none">سائن ان ناکام — ای میل / پاس ورڈ چیک کریں۔</p>
+  </section>
+
+  <!-- Step 3: data -->
+  <section id="data-box" style="display:none">
+    <div class="card">
+      <h2>رجسٹرڈ ڈونرز <span id="donor-count"></span></h2>
+      <div class="filters" style="margin-bottom:10px">
+        <div>
+          <label for="d-group">بلڈ گروپ</label>
+          <select id="d-group"></select>
+        </div>
+        <div>
+          <label for="d-city">شہر</label>
+          <select id="d-city"></select>
+        </div>
+      </div>
+      <button class="btn small" type="button" id="refresh-donors">تازہ کریں</button>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>نام</th><th>گروپ</th><th>شہر</th><th>عمر</th><th>آخری عطیہ</th><th>فون</th><th></th></tr></thead>
+          <tbody id="donor-rows"></tbody>
+        </table>
+      </div>
+      <p id="donor-empty" class="empty" style="display:none">کوئی ڈونر نہیں ملا۔</p>
+    </div>
+
+    <div class="card">
+      <h2>خون کی درخواستیں <span id="req-count"></span></h2>
+      <button class="btn small" type="button" id="refresh-reqs">تازہ کریں</button>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>مریض</th><th>اسپتال</th><th>گروپ</th><th>یونٹ</th><th>حالت</th><th>رپورٹ</th><th>فون</th><th></th></tr></thead>
+          <tbody id="req-rows"></tbody>
+        </table>
+      </div>
+      <p id="req-empty" class="empty" style="display:none">کوئی درخواست نہیں ہے۔</p>
+    </div>
+
+    <button class="btn ghost" type="button" id="signout-btn">سائن آؤٹ</button>
+  </section>
+
+  <footer>
+    یہ پینل صرف ٹیم کے ذمہ دار کے لیے ہے — ڈونرز کی تفصیل کسی سے شیئر نہ کریں۔
+  </footer>
+</div>
+
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

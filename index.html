@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المصباح اور المصطفیٰ — بلڈ ڈونیشن، سخی سرور</title>
+<meta name="description" content="سخی سرور اور ڈیرہ غازی خان میں خون کے عطیہ دہندگان سے رابطہ — المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ۔ خدمتِ خلق۔">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand">المصباح اور المصطفیٰ بلڈ ڈونیشن
+      <small>سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
+    </div>
+    <nav class="main">
+      <a href="index.html" class="active">ہوم</a>
+      <a href="register.html">ڈونر بنیں</a>
+      <a href="need-blood.html">خون چاہیے</a>
+      <a href="admin.html">ایڈمن</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+
+  <section class="hero">
+    <h1>خون عطیہ کریں، زندگی بچائیں</h1>
+    <p>ہم سخی سرور اور ڈیرہ غازی خان کے رضاکار ہیں۔ ہمارا مقصد یہ ہے کہ جس مریض کو خون کی ضرورت ہو، اسے بروقت عطیہ دہندہ مل جائے۔ آپ کا ایک عطیہ کسی کی زندگی بچا سکتا ہے۔</p>
+  </section>
+
+  <section class="card">
+    <h2>ہماری ٹیمیں</h2>
+    <div class="team-grid">
+      <div class="team">
+        <b>المصباح میڈیکل ٹیم</b>
+        <p>سخی سرور میں مریضوں کی مدد اور خون کا انتظام کرنے والی رضاکار ٹیم۔</p>
+      </div>
+      <div class="team">
+        <b>المصطفیٰ بلڈ ڈونیشن گروپ</b>
+        <p>سخی سرور میں خون کے عطیات کا انتظام کرنے والا رضاکار گروپ۔ دونوں ٹیمیں مل کر ایک ہی کام کرتی ہیں۔</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>طریقہ کار — کیسے کام کرتا ہے؟</h2>
+    <ol class="steps">
+      <li><b>ڈونر بنیں یا تلاش کریں:</b> خون دینے کے لیے رجسٹر کریں، یا نیچے اپنے گروپ کا ڈونر تلاش کریں۔</li>
+      <li><b>ٹیم رابطہ کرے گی:</b> مریض اپنی HB رپورٹ اور بلڈ گروپ ٹیم کو دیتا ہے؛ ٹیم جتنا خون درکار ہو، اتنے یونٹ کا انتظام کرتی ہے۔ رابطہ WhatsApp کے ذریعے ہوتا ہے۔</li>
+      <li><b>خون صرف لائسنس یافتہ لیب سے:</b> خون کا لینا، چیک کرنا اور لگانا صرف اسپتال یا لائسنس یافتہ لیب / بلڈ بینک میں ہوتا ہے۔</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>ڈونر تلاش کریں</h2>
+    <p class="hint">رازداری: یہاں صرف نام، شہر، بلڈ گروپ اور آخری عطیے کی تاریخ نظر آتی ہے۔ فون نمبر کبھی عوامی طور پر نہیں دکھایا جاتا — ڈونر سے رابطہ ٹیم کے ذریعے ہوتا ہے۔</p>
+    <div id="config-note"></div>
+    <div class="filters">
+      <div>
+        <label for="f-group">بلڈ گروپ</label>
+        <select id="f-group"></select>
+      </div>
+      <div>
+        <label for="f-city">شہر</label>
+        <select id="f-city"></select>
+      </div>
+    </div>
+    <button class="btn" id="search-btn" type="button">تلاش کریں</button>
+    <div id="results" class="donor-grid"></div>
+    <p id="results-empty" class="empty" style="display:none">اس گروپ / شہر کا کوئی ڈونر ابھی رجسٹرڈ نہیں ہے۔ براہِ کرم ٹیم سے رابطہ کریں یا بعد میں دوبارہ دیکھیں۔</p>
+  </section>
+
+  <section class="card">
+    <h2>خون کون دے سکتا ہے؟</h2>
+    <p>عمر 18 سے 60 سال، وزن کم از کم 50 کلو، آخری عطیہ کم از کم 3 ماہ پہلے دیا ہو، اور ہیپاٹائٹس بی یا سی نہ ہو۔ عطیے سے پہلے لیب آپ کی صحت ضرور چیک کرتی ہے۔</p>
+  </section>
+
+  <div class="notice">
+    <b>اہم:</b> یہ ویب سائٹ خون جمع نہیں کرتی، کوئی فیس نہیں لیتی، اور خون کا لین دین نہیں کرتی۔ یہ صرف مریض اور عطیہ دہندہ کے درمیان رابطے کا ذریعہ ہے۔ خون صرف لائسنس یافتہ لیب یا بلڈ بینک میں لیا اور چیک کیا جاتا ہے۔
+  </div>
+
+  <footer>
+    المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ — سخی سرور، ڈیرہ غازی خان<br>
+    خدمتِ خلق — اللہ کی رضا کے لیے
+  </footer>
+</div>
+
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+<script src="index.js"></script>
+</body>
+</html>

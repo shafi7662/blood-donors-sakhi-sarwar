@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ڈونر بنیں — المصباح اور المصطفیٰ بلڈ ڈونیشن</title>
+<meta name="description" content="خون کے عطیہ دہندہ کے طور پر رجسٹر کریں — سخی سرور اور ڈیرہ غازی خان۔">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand">المصباح اور المصطفیٰ بلڈ ڈونیشن
+      <small>سخی سرور، ضلع ڈیرہ غازی خان — خدمتِ خلق</small>
+    </div>
+    <nav class="main">
+      <a href="index.html">ہوم</a>
+      <a href="register.html" class="active">ڈونر بنیں</a>
+      <a href="need-blood.html">خون چاہیے</a>
+      <a href="admin.html">ایڈمن</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <section class="card">
+    <h2>ڈونر کے طور پر رجسٹر کریں</h2>
+    <p>آپ کی تفصیل محفوظ کی جائے گی تاکہ جب آپ کے گروپ کا خون چاہیے ہو تو ٹیم آپ سے رابطہ کر سکے۔</p>
+    <p class="hint">رازداری: آپ کا فون نمبر ویب سائٹ پر عوامی طور پر کبھی نہیں دکھایا جائے گا — وہ صرف ٹیم (ایڈمن پینل) کو نظر آئے گا۔</p>
+    <div id="config-note"></div>
+
+    <form id="donor-form">
+      <label for="name">نام <span class="required">*</span></label>
+      <input type="text" id="name" required maxlength="80" placeholder="اپنا نام لکھیں">
+
+      <label for="city">شہر <span class="required">*</span></label>
+      <select id="city" required></select>
+
+      <label for="group">بلڈ گروپ <span class="required">*</span></label>
+      <select id="group" required></select>
+
+      <label for="phone">فون / WhatsApp نمبر <span class="required">*</span></label>
+      <input type="tel" id="phone" required maxlength="15" placeholder="مثلاً 03001234567" dir="ltr" style="text-align:right">
+      <p class="hint">نمبر صرف ٹیم کو نظر آئے گا، عوام کو نہیں۔</p>
+
+      <label for="age">عمر <span class="required">*</span></label>
+      <input type="number" id="age" required min="18" max="60" placeholder="مثلاً 25">
+
+      <label for="last-donation">آخری بار خون کب دیا تھا؟</label>
+      <input type="date" id="last-donation">
+      <p class="hint">اگر کبھی نہیں دیا تو خالی چھوڑ دیں۔ دو عطیوں کے درمیان کم از کم 3 ماہ کا وقفہ ہونا چاہیے۔</p>
+
+      <label class="checkbox">
+        <input type="checkbox" id="consent" required>
+        <span>میں رضا مندی سے اپنا نام، شہر، بلڈ گروپ اور فون نمبر ٹیم کو دے رہا/رہی ہوں تاکہ ضرورت پڑنے پر مجھ سے رابطہ کیا جا سکے۔ <span class="required">*</span></span>
+      </label>
+
+      <button class="btn" type="submit" id="submit-btn">رجسٹر کریں</button>
+    </form>
+
+    <div id="success" class="notice info" style="display:none"></div>
+  </section>
+
+  <div class="notice">
+    <b>اہم:</b> خون صرف لائسنس یافتہ لیب یا بلڈ بینک میں لیا اور چیک کیا جاتا ہے۔ عطیے سے پہلے آپ کی صحت کی جانچ ہوگی۔
+  </div>
+
+  <footer>
+    المصباح میڈیکل ٹیم اور المصطفیٰ بلڈ ڈونیشن گروپ — سخی سرور، ڈیرہ غازی خان
+  </footer>
+</div>
+
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+<script src="register.js"></script>
+</body>
+</html>
