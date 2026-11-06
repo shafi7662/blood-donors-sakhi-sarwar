@@ -1,6 +1,9 @@
 // Blood request — upload HB report to storage, save request, WhatsApp the team
-// NOTE: a file cannot be auto-attached to a wa.me link — the report lives
-// in the Supabase storage bucket and the team views it from the admin panel.
+// NOTE: a file cannot be auto-attached to a wa.me link, so instead the team's
+// WhatsApp message carries a 7-day signed link to the report (private bucket;
+// the link is unguessable and expires). The team can also always view the
+// report from the admin panel. Minting the link right after upload is allowed
+// by the "Anyone can read just-uploaded reports" storage policy (15 min window).
 (function () {
   fillCitySelect($("city"));
   fillGroupSelect($("group"));
@@ -31,14 +34,18 @@
 
     if (!SUPABASE_READY || !supabaseClient) {
       showToast("سیٹ اپ مکمل نہیں ہے — براہِ کرم رپورٹ WhatsApp پر براہِ راست بھیجیں۔");
-      openWhatsApp(data, false);
+      openWhatsApp(data, false, null);
       btn.disabled = false;
       return;
     }
 
-    // 1) Upload the report to the private bucket
+    // 1) Upload the report to the private bucket (random id in the path so
+    // the path itself is unguessable)
     var safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-    var path = "requests/" + Date.now() + "-" + safeName;
+    var rand = (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : ("id-" + Date.now() + "-" + Math.floor(Math.random() * 1e9));
+    var path = "requests/" + rand + "-" + Date.now() + "-" + safeName;
     var up = await supabaseClient.storage.from("blood-reports").upload(path, file, {
       cacheControl: "3600",
       upsert: false
@@ -60,8 +67,19 @@
       return;
     }
 
-    // 3) WhatsApp summary to the team (report itself is in the admin panel)
-    openWhatsApp(data, true);
+    // 3) Mint a 7-day signed link to the report for the team's WhatsApp
+    // message. If minting fails, fall back to the admin-panel note.
+    var reportLink = null;
+    var sign = await supabaseClient.storage.from("blood-reports")
+      .createSignedUrl(path, 7 * 24 * 3600);
+    if (!sign.error && sign.data && sign.data.signedUrl) {
+      reportLink = sign.data.signedUrl;
+    } else {
+      console.error(sign.error);
+    }
+
+    // 4) WhatsApp summary to the team (with the report link when available)
+    openWhatsApp(data, true, reportLink);
 
     var ok = $("success");
     ok.style.display = "block";
@@ -71,7 +89,7 @@
     window.scrollTo(0, ok.offsetTop - 20);
   });
 
-  function openWhatsApp(data, reportSaved) {
+  function openWhatsApp(data, reportSaved, reportLink) {
     var text =
       "السلام علیکم! مریض کے لیے خون کی ضرورت ہے۔\n" +
       "مریض: " + data.patient_name + "\n" +
@@ -81,7 +99,9 @@
       "یونٹ: " + data.units_needed + "\n" +
       "رابطہ: " + data.requester_phone + "\n" +
       (reportSaved
-        ? "HB رپورٹ اپ لوڈ کر دی ہے — براہِ کرم ایڈمن پینل سے دیکھ لیں۔"
+        ? (reportLink
+          ? "HB رپورٹ: " + reportLink + "\n(یہ لنک 7 دن تک کام کرے گا۔)"
+          : "HB رپورٹ اپ لوڈ کر دی ہے — براہِ کرم ایڈمن پینل سے دیکھ لیں۔")
         : "HB رپورٹ میں WhatsApp پر الگ سے بھیج رہا/رہی ہوں۔");
     window.open(waLink(SUPABASE_CONFIG.TEAM_WHATSAPP, text), "_blank");
   }

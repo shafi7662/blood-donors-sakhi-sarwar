@@ -131,6 +131,16 @@ create policy "Admin can read reports"
   to authenticated
   using (bucket_id = 'blood-reports');
 
+-- v2 (2026-11-06): رپورٹ بھیجنے والا مریض اپ لوڈ کے فوراً بعد (15 منٹ کے اندر)
+-- رپورٹ پڑھ سکتا ہے — صرف اس لیے کہ ٹیم کی WhatsApp اطلاع میں 7 دن کا signed
+-- لنک بنایا جا سکے۔ پرانی رپورٹس صرف ایڈمن دیکھ سکتا ہے؛ راستے میں random id
+-- ہوتا ہے اس لیے کوئی اندازے سے رپورٹ نہیں کھول سکتا۔
+drop policy if exists "Anyone can read just-uploaded reports" on storage.objects;
+create policy "Anyone can read just-uploaded reports"
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'blood-reports' AND created_at > now() - interval '15 minutes');
+
 -- ============================================================
 --  نوٹ:
 --  1) anon صارف براہِ راست donors / blood_requests ٹیبل کو SELECT
