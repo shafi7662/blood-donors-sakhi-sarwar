@@ -69,7 +69,7 @@ nav.main a.active:hover { background: var(--red-dark); }
   border-radius: 16px;
   overflow: hidden;
   margin: 20px 0 12px;
-  min-height: 320px;
+  min-height: 380px;
   display: flex;
   align-items: flex-end;
   box-shadow: 0 8px 24px rgba(127, 29, 29, 0.18);
@@ -78,7 +78,7 @@ nav.main a.active:hover { background: var(--red-dark); }
 .hero-img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center 30%;
+  object-fit: cover; object-position: center 18%;
 }
 .hero-overlay {
   position: absolute; inset: 0;
