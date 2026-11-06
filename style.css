@@ -725,8 +725,29 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .drop, .marquee-track { animation: none; }
+  .drop, .marquee-track, .hero::after, .hero-cta .btn { animation: none; }
   .team, .group-pill, .donor, .btn { transition: none; }
+}
+
+/* ---------- Hero sweep + CTA pulse (kept from the previous design) ---------- */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.14) 45%, transparent 60%);
+  background-size: 250% 100%;
+  animation: sweep 7s ease-in-out infinite;
+}
+@keyframes sweep {
+  0%, 20% { background-position: 120% 0; }
+  60%, 100% { background-position: -40% 0; }
+}
+.hero-cta .btn { animation: pulse 2.6s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); }
+  50% { box-shadow: 0 6px 26px rgba(255, 255, 255, 0.6); }
 }
 
 /* ---------- Language Toggle ---------- */
