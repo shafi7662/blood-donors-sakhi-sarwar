@@ -25,6 +25,9 @@ create table if not exists public.blood_requests (
   city text not null,
   blood_group text not null check (blood_group in ('A+','A-','B+','B-','AB+','AB-','O+','O-')),
   units_needed int not null check (units_needed between 1 and 10),
+  -- v3 (2026-11-06): مقدار cc میں — ڈاکٹر cc میں بتاتا ہے (1 یونٹ ≈ 400cc)۔
+  -- units_needed پرانی قطاروں کے لیے رکھا ہے؛ نیا کوڈ cc_needed لکھتا ہے۔
+  cc_needed int,
   report_path text,
   requester_phone text not null,
   status text not null default 'pending'
@@ -150,3 +153,9 @@ create policy "Anyone can read just-uploaded reports"
 --     کے سائن ان میں استعمال ہوگا۔
 --  3) service_role key کبھی ویب سائٹ کے کوڈ میں نہ ڈالیں۔
 -- ============================================================
+
+-- ---------- v3 migration (2026-11-06): cc_needed ----------
+-- Run on the live database once (already applied 2026-11-06):
+--   alter table public.blood_requests add column if not exists cc_needed int;
+--   update public.blood_requests set cc_needed = units_needed * 400 where cc_needed is null;
+-- New requests write cc_needed (and units_needed = ceil(cc/400) as a hint).

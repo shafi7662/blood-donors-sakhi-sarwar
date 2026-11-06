@@ -21,12 +21,20 @@
       btn.disabled = false; return;
     }
 
+    var cc = parseInt($("cc").value, 10);
+    if (!cc || cc < 50 || cc > 5000) {
+      showToast("براہِ کرم خون کی مقدار cc میں لکھیں (50 سے 5000 تک)۔");
+      btn.disabled = false; return;
+    }
+    var units = Math.ceil(cc / 400); // 1 یونٹ ≈ 400cc — صرف اشارے کے لیے
+
     var data = {
       patient_name: $("patient").value.trim(),
       hospital: $("hospital").value.trim(),
       city: $("city").value,
       blood_group: $("group").value,
-      units_needed: parseInt($("units").value, 10),
+      cc_needed: cc,
+      units_needed: units,
       requester_phone: $("phone").value.trim(),
       status: "pending",
       report_path: null
@@ -96,7 +104,7 @@
       "اسپتال: " + data.hospital + "\n" +
       "شہر: " + data.city + "\n" +
       "بلڈ گروپ: " + data.blood_group + "\n" +
-      "یونٹ: " + data.units_needed + "\n" +
+      "خون: " + data.cc_needed + " cc (تقریباً " + data.units_needed + " یونٹ)\n" +
       "رابطہ: " + data.requester_phone + "\n" +
       (reportSaved
         ? (reportLink

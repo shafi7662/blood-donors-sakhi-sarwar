@@ -167,6 +167,18 @@
     renderRequests();
   }
 
+  // cc (1 یونٹ ≈ 400cc) — پرانی قطاروں میں صرف units_needed ہو تو اس سے حساب
+  function ccOf(r) {
+    if (r.cc_needed) return r.cc_needed;
+    if (r.units_needed) return r.units_needed * 400;
+    return null;
+  }
+  function ccText(r) {
+    var cc = ccOf(r);
+    if (!cc) return "—";
+    return cc + " cc (~" + Math.ceil(cc / 400) + " یونٹ)";
+  }
+
   function renderRequests() {
     var group = $("r-group").value;
     var list = allRequests.filter(function (r) {
@@ -179,7 +191,7 @@
     list.forEach(function (r) {
       var tr = document.createElement("tr");
       var wa = waLink(r.requester_phone,
-        "السلام علیکم! آپ کی خون کی درخواست (" + r.blood_group + "، " + r.units_needed + " یونٹ، " +
+        "السلام علیکم! آپ کی خون کی درخواست (" + r.blood_group + "، " + ccText(r) + "، " +
         r.patient_name + ") مل گئی ہے۔ ٹیم انتظام کر رہی ہے۔");
       var statusBadge = r.status === "fulfilled"
         ? '<span class="badge done">مکمل</span>'
@@ -188,7 +200,7 @@
         "<td>" + esc(r.patient_name) + "</td>" +
         "<td>" + esc(r.hospital) + "، " + esc(r.city) + "</td>" +
         "<td><b>" + esc(r.blood_group) + "</b></td>" +
-        "<td>" + esc(r.units_needed) + "</td>" +
+        "<td><b>" + esc(ccText(r)) + "</b></td>" +
         "<td>" + statusBadge + "<br>" +
           "<select data-req=\"" + r.id + "\" class=\"status-sel\">" +
             ["pending", "arranged", "fulfilled", "cancelled"].map(function (s) {
