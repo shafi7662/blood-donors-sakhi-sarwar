@@ -89,6 +89,40 @@
     location.reload();
   });
 
+  // ---- Add a team admin (email + password) ----
+  // A separate client (no saved session) so the current admin stays signed in.
+  var adminCreateClient = null;
+  function getAdminCreateClient() {
+    if (adminCreateClient) return adminCreateClient;
+    adminCreateClient = supabase.createClient(SUPABASE_CONFIG.SUPABASE_URL, SUPABASE_CONFIG.SUPABASE_ANON_KEY, {
+      auth: { storageKey: "sb-blood-admin-create", persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+    });
+    return adminCreateClient;
+  }
+  $("new-admin-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var email = $("new-admin-email").value.trim();
+    var pass = $("new-admin-pass").value;
+    if (pass.length < 6) { showToast(t("toast_adm_short")); return; }
+    if (!SUPABASE_READY) { showToast(t("toast_auth_setup")); return; }
+    var btn = $("new-admin-btn");
+    btn.disabled = true;
+    var res = await getAdminCreateClient().auth.signUp({ email: email, password: pass });
+    btn.disabled = false;
+    if (res.error) {
+      console.error(res.error);
+      showToast(res.error.message && res.error.message.toLowerCase().indexOf("already") !== -1 ? t("toast_adm_exists") : t("toast_adm_fail"));
+      return;
+    }
+    var user = res.data && res.data.user;
+    if (user && user.identities && user.identities.length === 0) {
+      showToast(t("toast_adm_exists"));
+      return;
+    }
+    showToast(res.data && res.data.session ? t("toast_adm_ok", { email: email }) : t("toast_adm_ok_confirm", { email: email }));
+    $("new-admin-form").reset();
+  });
+
   // ---- Donors: fetch once, filter locally ----
   async function loadDonors() {
     var res = await supabaseClient.from("donors").select("*").order("created_at", { ascending: false }).limit(200);
