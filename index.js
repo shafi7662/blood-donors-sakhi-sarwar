@@ -119,6 +119,16 @@
     });
   });
 
+  // Home WhatsApp CTA — href comes from the single config number
+  var waBtn = $("wa-cta");
+  if (waBtn) {
+    if (typeof teamWhatsAppConfigured === "function" && teamWhatsAppConfigured()) {
+      waBtn.href = waLink(SUPABASE_CONFIG.TEAM_WHATSAPP, t("wa_hello"));
+    } else {
+      waBtn.style.display = "none";
+    }
+  }
+
   // Language switched: refill translated selects and re-render cached results
   window.__onLangChange = function () {
     fillSelects();
