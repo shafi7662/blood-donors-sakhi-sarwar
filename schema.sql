@@ -159,3 +159,82 @@ create policy "Anyone can read just-uploaded reports"
 --   alter table public.blood_requests add column if not exists cc_needed int;
 --   update public.blood_requests set cc_needed = units_needed * 400 where cc_needed is null;
 -- New requests write cc_needed (and units_needed = ceil(cc/400) as a hint).
+
+-- ============================================================
+--  v4 (2026-11-07): "اپڈیٹس" — جن مریضوں کو خون ملا، ان کی
+--  تصویر + کہانی ہوم پیج پر دکھانے کے لیے۔
+--  Run on the live database once (Supabase Dashboard → SQL Editor):
+--    1) نیچے کی table + RLS پالیسیز
+--    2) نیا PUBLIC bucket 'donation-updates' + اس کی پالیسیز
+--  photo_path: تصویر کی storage path (حذف کرنے کے لیے)؛
+--  photo_url: تصویر کا public URL (ہوم پیج پر دکھانے کے لیے)۔
+-- ============================================================
+create table if not exists public.updates (
+  id uuid primary key default gen_random_uuid(),
+  patient_name text not null,
+  blood_group text check (blood_group in ('A+','A-','B+','B-','AB+','AB-','O+','O-')),
+  hospital text,
+  story text,
+  photo_url text,
+  photo_path text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists updates_created_idx on public.updates (created_at desc);
+
+alter table public.updates enable row level security;
+
+-- Updates: عوام ہوم پیج پر پڑھ سکتی ہے (صرف SELECT)
+drop policy if exists "Anyone can read updates" on public.updates;
+create policy "Anyone can read updates"
+  on public.updates for select
+  to anon, authenticated
+  using (true);
+
+-- Updates: شامل کرنا صرف لاگ ان ایڈمن کو
+drop policy if exists "Admin can add updates" on public.updates;
+create policy "Admin can add updates"
+  on public.updates for insert
+  to authenticated
+  with check (true);
+
+-- Updates: بدلنا صرف لاگ ان ایڈمن کو
+drop policy if exists "Admin can update updates" on public.updates;
+create policy "Admin can update updates"
+  on public.updates for update
+  to authenticated
+  using (true) with check (true);
+
+-- Updates: حذف کرنا صرف لاگ ان ایڈمن کو
+drop policy if exists "Admin can delete updates" on public.updates;
+create policy "Admin can delete updates"
+  on public.updates for delete
+  to authenticated
+  using (true);
+
+-- ---------- Storage bucket: donation updates (PUBLIC) ----------
+-- تصاویر ہوم پیج پر ہر دیکھنے والے کو نظر آتی ہیں، اس لیے bucket public ہے۔
+insert into storage.buckets (id, name, public)
+values ('donation-updates', 'donation-updates', true)
+on conflict (id) do nothing;
+
+-- اپڈیٹ کی تصاویر کوئی بھی پڑھ سکتا ہے (public bucket)
+drop policy if exists "Anyone can read update photos" on storage.objects;
+create policy "Anyone can read update photos"
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'donation-updates');
+
+-- تصویر اپ لوڈ صرف لاگ ان ایڈمن کر سکتا ہے
+drop policy if exists "Admin can upload update photos" on storage.objects;
+create policy "Admin can upload update photos"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'donation-updates');
+
+-- تصویر حذف صرف لاگ ان ایڈمن کر سکتا ہے
+drop policy if exists "Admin can delete update photos" on storage.objects;
+create policy "Admin can delete update photos"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'donation-updates');

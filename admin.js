@@ -4,11 +4,12 @@
 // "record donation" button, and delete buttons (RLS delete policies for authenticated).
 (function () {
   function fillAdminSelects() {
-    var dg = $("d-group").value, rg = $("r-group").value, dc = $("d-city").value;
+    var dg = $("d-group").value, rg = $("r-group").value, dc = $("d-city").value, ug = $("upd-group").value;
     fillGroupSelect($("d-group"), t("all_groups"), true);
     fillGroupSelect($("r-group"), t("all_groups"), true);
     fillCitySelect($("d-city"), t("all_cities"));
-    $("d-group").value = dg; $("r-group").value = rg; $("d-city").value = dc;
+    fillGroupSelect($("upd-group"), t("pick_group"));
+    $("d-group").value = dg; $("r-group").value = rg; $("d-city").value = dc; $("upd-group").value = ug;
   }
   fillAdminSelects();
   $("config-note").innerHTML = configWarningBox();
@@ -74,6 +75,7 @@
     $("data-box").style.display = "block";
     loadDonors();
     loadRequests();
+    loadUpdates();
   });
 
   $("signout-btn").addEventListener("click", async function () {
@@ -255,6 +257,133 @@
     });
   }
 
+  // ---- Updates: photo + story of patients who received blood ----
+  var allUpdates = [];
+
+  async function loadUpdates() {
+    var res = await supabaseClient.from("updates")
+      .select("*").order("created_at", { ascending: false }).limit(200);
+    if (res.error) {
+      console.error(res.error);
+      showToast(t("toast_upd_load_fail"));
+      return;
+    }
+    allUpdates = res.data;
+    renderUpdates();
+  }
+
+  function renderUpdates() {
+    var tbody = $("upd-rows");
+    tbody.innerHTML = "";
+    $("upd-count").textContent = "(" + allUpdates.length + ")";
+    $("upd-empty").style.display = allUpdates.length ? "none" : "block";
+    allUpdates.forEach(function (u) {
+      var tr = document.createElement("tr");
+      var thumb = u.photo_url
+        ? '<img class="upd-thumb" src="' + esc(u.photo_url) + '" alt="' + esc(u.patient_name) + '" loading="lazy">'
+        : "—";
+      tr.innerHTML =
+        "<td>" + thumb + "</td>" +
+        "<td>" + esc(u.patient_name) + "</td>" +
+        "<td><b>" + esc(u.blood_group || "—") + "</b></td>" +
+        "<td>" + esc(u.hospital || "—") + "</td>" +
+        "<td>" + esc(fmtDate(u.created_at)) + "</td>" +
+        "<td style=\"white-space:nowrap\">" +
+          "<button class=\"btn small danger\" type=\"button\" data-del-upd=\"" + u.id + "\" data-name=\"" + esc(u.patient_name) + "\" data-photo=\"" + esc(u.photo_path || "") + "\">" + esc(t("btn_delete")) + "</button>" +
+        "</td>";
+      tbody.appendChild(tr);
+    });
+
+    // delete an update: row first, then try to remove the photo file
+    tbody.querySelectorAll("[data-del-upd]").forEach(function (btnEl) {
+      btnEl.addEventListener("click", async function () {
+        if (!confirm(t("confirm_del_upd", { name: btnEl.dataset.name }))) return;
+        var del = await supabaseClient.from("updates").delete().eq("id", btnEl.dataset.delUpd);
+        if (del.error) {
+          console.error(del.error);
+          showToast(t("toast_upd_del_fail"));
+          return;
+        }
+        // Photo file cleanup — best effort; the row is already gone.
+        var photoPath = btnEl.dataset.photo || "";
+        if (photoPath) {
+          var rm = await supabaseClient.storage.from("donation-updates").remove([photoPath]);
+          if (rm.error) {
+            console.error(rm.error);
+            showToast(t("toast_upd_photo_left"));
+          } else {
+            showToast(t("toast_upd_del_ok"));
+          }
+        } else {
+          showToast(t("toast_upd_del_ok"));
+        }
+        loadUpdates();
+      });
+    });
+  }
+
+  // New update: validate → upload photo (public bucket) → insert row
+  $("update-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var btn = $("upd-submit");
+    btn.disabled = true;
+
+    var file = $("upd-photo").files[0];
+    if (!file) { showToast(t("toast_upd_no_photo")); btn.disabled = false; return; }
+    if (["image/jpeg", "image/png", "image/webp"].indexOf(file.type) === -1) {
+      showToast(t("toast_upd_bad_type")); btn.disabled = false; return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast(t("toast_upd_big_file")); btn.disabled = false; return;
+    }
+    if (!$("upd-consent").checked) {
+      showToast(t("toast_upd_no_consent")); btn.disabled = false; return;
+    }
+
+    if (!SUPABASE_READY || !supabaseClient) {
+      showToast(t("toast_auth_setup")); btn.disabled = false; return;
+    }
+
+    // 1) Upload the photo to the public bucket (random id in the path)
+    var safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+    var rand = (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : ("id-" + Date.now() + "-" + Math.floor(Math.random() * 1e9));
+    var path = "updates/" + rand + "-" + Date.now() + "-" + safeName;
+    var up = await supabaseClient.storage.from("donation-updates").upload(path, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+    if (up.error) {
+      console.error(up.error);
+      showToast(t("toast_upd_fail"));
+      btn.disabled = false;
+      return;
+    }
+    var pub = supabaseClient.storage.from("donation-updates").getPublicUrl(path);
+
+    // 2) Save the update row
+    var ins = await supabaseClient.from("updates").insert([{
+      patient_name: $("upd-name").value.trim(),
+      blood_group: $("upd-group").value || null,
+      hospital: $("upd-hospital").value.trim() || null,
+      story: $("upd-story").value.trim() || null,
+      photo_url: pub.data ? pub.data.publicUrl : null,
+      photo_path: path
+    }]);
+    if (ins.error) {
+      console.error(ins.error);
+      showToast(t("toast_upd_fail"));
+      btn.disabled = false;
+      return;
+    }
+
+    showToast(t("toast_upd_ok"));
+    $("update-form").reset();
+    btn.disabled = false;
+    loadUpdates();
+  });
+
   function statusLabel(s) {
     return { pending: t("status_pending"), arranged: t("status_arranged"), fulfilled: t("status_fulfilled"), cancelled: t("status_cancelled") }[s] || s;
   }
@@ -265,10 +394,12 @@
     $("config-note").innerHTML = configWarningBox();
     renderDonors();
     renderRequests();
+    renderUpdates();
   };
 
   $("refresh-donors").addEventListener("click", loadDonors);
   $("refresh-reqs").addEventListener("click", loadRequests);
+  $("refresh-updates").addEventListener("click", loadUpdates);
   $("d-search").addEventListener("input", renderDonors);
   $("d-group").addEventListener("change", renderDonors);
   $("d-city").addEventListener("change", renderDonors);

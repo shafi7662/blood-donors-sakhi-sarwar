@@ -119,6 +119,57 @@
     });
   });
 
+  // ---- Updates: latest 6 stories of patients who received blood ----
+  var lastUpdates = [];
+
+  function renderUpdates(rows) {
+    lastUpdates = rows || [];
+    var listEl = $("updates-list");
+    var emptyEl = $("updates-empty");
+    if (!listEl) return;
+    listEl.innerHTML = "";
+    if (!rows || rows.length === 0) {
+      if (emptyEl) emptyEl.style.display = "block";
+      return;
+    }
+    if (emptyEl) emptyEl.style.display = "none";
+    var isEn = document.body.classList.contains("lang-en");
+    rows.forEach(function (u) {
+      var card = document.createElement("article");
+      card.className = "update-card";
+      var photo = u.photo_url
+        ? '<img class="update-photo" src="' + esc(u.photo_url) + '" alt="' + esc(u.patient_name) + '" loading="lazy">'
+        : "";
+      var meta = [];
+      if (u.hospital) meta.push("🏥 " + esc(u.hospital));
+      if (u.created_at) meta.push("🗓️ " + esc(fmtDate(u.created_at)));
+      card.innerHTML = photo +
+        '<div class="update-body">' +
+          '<div class="update-top">' +
+            '<span class="update-name">' + esc(u.patient_name) + '</span>' +
+            (u.blood_group ? '<span class="update-group" dir="ltr">' + esc(u.blood_group) + '</span>' : "") +
+          '</div>' +
+          (meta.length ? '<div class="update-meta">' + meta.join(isEn ? " · " : " · ") + '</div>' : "") +
+          (u.story ? '<p class="update-story">' + esc(u.story) + '</p>' : "") +
+          '<div><span class="status-pill avail">' + esc(t("upd_badge")) + '</span></div>' +
+        '</div>';
+      listEl.appendChild(card);
+    });
+  }
+
+  async function loadUpdates() {
+    if (!SUPABASE_READY || !supabaseClient) { renderUpdates([]); return; }
+    var res = await supabaseClient.from("updates")
+      .select("*").order("created_at", { ascending: false }).limit(6);
+    if (res.error) {
+      // Table not created yet (or offline) → clean empty state, no noise
+      console.error(res.error);
+      renderUpdates([]);
+      return;
+    }
+    renderUpdates(res.data);
+  }
+
   // Home WhatsApp CTA — href comes from the single config number
   var waBtn = $("wa-cta");
   if (waBtn) {
@@ -134,7 +185,9 @@
     fillSelects();
     $("config-note").innerHTML = configWarningBox();
     render(lastDonors);
+    renderUpdates(lastUpdates);
   };
 
   search();
+  loadUpdates();
 })();

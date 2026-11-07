@@ -71,6 +71,21 @@ function cityLabel(urName) {
 
 var BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
+// ISO تاریخ → زبان کے مطابق مختصر تاریخ (مثلاً 7 نومبر 2026)؛
+// اگر براؤزر locale نہ سمجھے تو YYYY-MM-DD واپس۔
+function fmtDate(iso) {
+  if (!iso) return "—";
+  var d = new Date(String(iso).slice(0, 10) + "T00:00:00");
+  if (isNaN(d.getTime())) return String(iso).slice(0, 10);
+  try {
+    var loc = (typeof CURRENT_LANG !== "undefined" && CURRENT_LANG === "ur") ? "ur-PK" : "en-GB";
+    return d.toLocaleDateString(loc,
+      { day: "numeric", month: "short", year: "numeric" });
+  } catch (e) {
+    return String(iso).slice(0, 10);
+  }
+}
+
 function fillCitySelect(selectEl, placeholder) {
   selectEl.innerHTML = "";
   var opt0 = document.createElement("option");
