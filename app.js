@@ -29,6 +29,20 @@ function teamWhatsAppConfigured() {
   return n.length >= 10;
 }
 
+// Header / emergency WhatsApp buttons (class .wa-link) — href comes from the
+// single configured number, same pattern as the home wa-cta wiring in index.js.
+function wireWhatsAppLinks() {
+  var els = document.querySelectorAll(".wa-link");
+  if (!els.length) return;
+  if (typeof teamWhatsAppConfigured === "function" && teamWhatsAppConfigured()) {
+    var href = waLink(SUPABASE_CONFIG.TEAM_WHATSAPP, t("wa_hello"));
+    els.forEach(function (el) { el.href = href; });
+  } else {
+    els.forEach(function (el) { el.style.display = "none"; });
+  }
+}
+document.addEventListener("DOMContentLoaded", wireWhatsAppLinks);
+
 // Config na mukammal ho to user ko saaf batao (khamoshi se fail na ho)
 function configWarningBox() {
   if (SUPABASE_READY) return "";
