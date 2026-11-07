@@ -1,5 +1,6 @@
-// Admin panel — password gate, then Supabase Auth, then donor/request management
+// Admin panel — ONE login: Supabase Auth only (the old password gate was removed 2026-11-07).
 // Phone numbers and reports are visible ONLY after sign-in (RLS: authenticated role).
+// A saved session opens the panel straight away — no login asked again on the same phone/browser.
 // v2: search + blood-group filter, per-donor stats (last donation, days since, count),
 // "record donation" button, and delete buttons (RLS delete policies for authenticated).
 (function () {
@@ -39,19 +40,24 @@
     return diff < 0 ? 0 : diff;
   }
 
-  // ---- Step 1: simple gate ----
-  $("gate-form").addEventListener("submit", function (e) {
-    e.preventDefault();
-    if ($("gate-pass").value === SUPABASE_CONFIG.ADMIN_PASSWORD) {
-      $("gate-box").style.display = "none";
-      $("auth-box").style.display = "block";
-      $("gate-error").style.display = "none";
-    } else {
-      $("gate-error").style.display = "block";
+  // ---- Single login: Supabase Auth only ----
+  // If a session is already saved on this phone/browser, open the panel straight away.
+  (async function () {
+    if (SUPABASE_READY && supabaseClient) {
+      var s = await supabaseClient.auth.getSession();
+      if (s.data && s.data.session) {
+        $("auth-box").style.display = "none";
+        $("data-box").style.display = "block";
+        loadDonors();
+        loadRequests();
+        loadUpdates();
+        return;
+      }
     }
-  });
+    $("auth-box").style.display = "block";
+  })();
 
-  // ---- Step 2: Supabase Auth ----
+  // ---- Supabase Auth ----
   $("auth-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     if (!SUPABASE_READY || !supabaseClient) {
