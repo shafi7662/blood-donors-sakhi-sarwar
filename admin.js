@@ -1,6 +1,10 @@
-// Admin panel — ONE login: Supabase Auth only (the old password gate was removed 2026-11-07).
-// Phone numbers and reports are visible ONLY after sign-in (RLS: authenticated role).
-// A saved session opens the panel straight away — no login asked again on the same phone/browser.
+// Admin panel — ONE login: the panel's own password (the gate).
+// Behind it, the panel signs in to Supabase automatically with the panel's
+// service account (same password — see ADMIN_EMAIL / ADMIN_PASSWORD in
+// supabase-config.js). No second login is ever shown.
+// Phone numbers and reports are visible ONLY after that sign-in (RLS: authenticated role).
+// v8 (2026-11-07): gate restored, Supabase form removed, add-admin form removed
+// (with one shared password, "making an admin" just means sharing the password).
 // v2: search + blood-group filter, per-donor stats (last donation, days since, count),
 // "record donation" button, and delete buttons (RLS delete policies for authenticated).
 (function () {
@@ -13,7 +17,6 @@
     $("d-group").value = dg; $("r-group").value = rg; $("d-city").value = dc; $("upd-group").value = ug;
   }
   fillAdminSelects();
-  $("config-note").innerHTML = configWarningBox();
 
   var allDonors = [];
   var allRequests = [];
@@ -40,44 +43,33 @@
     return diff < 0 ? 0 : diff;
   }
 
-  // ---- Single login: Supabase Auth only ----
-  // If a session is already saved on this phone/browser, open the panel straight away.
-  (async function () {
-    if (SUPABASE_READY && supabaseClient) {
-      var s = await supabaseClient.auth.getSession();
-      if (s.data && s.data.session) {
-        $("auth-box").style.display = "none";
-        $("data-box").style.display = "block";
-        loadDonors();
-        loadRequests();
-        loadUpdates();
-        return;
-      }
-    }
-    $("auth-box").style.display = "block";
-  })();
-
-  // ---- Supabase Auth ----
-  $("auth-form").addEventListener("submit", async function (e) {
+  // ---- The panel's own login: one password ----
+  // Behind the gate, the panel signs in to Supabase automatically with the
+  // panel's service account (same password). The user never sees a second login.
+  $("gate-form").addEventListener("submit", async function (e) {
     e.preventDefault();
+    if ($("gate-pass").value !== SUPABASE_CONFIG.ADMIN_PASSWORD) {
+      $("gate-error").style.display = "block";
+      return;
+    }
+    $("gate-error").style.display = "none";
     if (!SUPABASE_READY || !supabaseClient) {
       showToast(t("toast_auth_setup"));
       return;
     }
-    var btn = $("auth-btn");
-    btn.disabled = true;
-    var res = await supabaseClient.auth.signInWithPassword({
-      email: $("auth-email").value.trim(),
-      password: $("auth-pass").value
-    });
-    btn.disabled = false;
-    if (res.error) {
-      console.error(res.error);
-      $("auth-error").style.display = "block";
-      return;
+    var s = await supabaseClient.auth.getSession();
+    if (!s.data || !s.data.session) {
+      var res = await supabaseClient.auth.signInWithPassword({
+        email: SUPABASE_CONFIG.ADMIN_EMAIL,
+        password: SUPABASE_CONFIG.ADMIN_PASSWORD
+      });
+      if (res.error) {
+        console.error(res.error);
+        showToast(t("auth_error"));
+        return;
+      }
     }
-    $("auth-error").style.display = "none";
-    $("auth-box").style.display = "none";
+    $("gate-box").style.display = "none";
     $("data-box").style.display = "block";
     loadDonors();
     loadRequests();
@@ -89,39 +81,13 @@
     location.reload();
   });
 
-  // ---- Add a team admin (email + password) ----
-  // A separate client (no saved session) so the current admin stays signed in.
-  var adminCreateClient = null;
-  function getAdminCreateClient() {
-    if (adminCreateClient) return adminCreateClient;
-    adminCreateClient = supabase.createClient(SUPABASE_CONFIG.SUPABASE_URL, SUPABASE_CONFIG.SUPABASE_ANON_KEY, {
-      auth: { storageKey: "sb-blood-admin-create", persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
-    });
-    return adminCreateClient;
-  }
-  $("new-admin-form").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    var email = $("new-admin-email").value.trim();
-    var pass = $("new-admin-pass").value;
-    if (pass.length < 6) { showToast(t("toast_adm_short")); return; }
-    if (!SUPABASE_READY) { showToast(t("toast_auth_setup")); return; }
-    var btn = $("new-admin-btn");
-    btn.disabled = true;
-    var res = await getAdminCreateClient().auth.signUp({ email: email, password: pass });
-    btn.disabled = false;
-    if (res.error) {
-      console.error(res.error);
-      showToast(res.error.message && res.error.message.toLowerCase().indexOf("already") !== -1 ? t("toast_adm_exists") : t("toast_adm_fail"));
-      return;
-    }
-    var user = res.data && res.data.user;
-    if (user && user.identities && user.identities.length === 0) {
-      showToast(t("toast_adm_exists"));
-      return;
-    }
-    showToast(res.data && res.data.session ? t("toast_adm_ok", { email: email }) : t("toast_adm_ok_confirm", { email: email }));
-    $("new-admin-form").reset();
-  });
+  // Language switched: refill translated selects and re-render cached tables
+  window.__onLangChange = function () {
+    fillAdminSelects();
+    renderDonors();
+    renderRequests();
+    renderUpdates();
+  };
 
   // ---- Donors: fetch once, filter locally ----
   async function loadDonors() {
@@ -427,15 +393,6 @@
   function statusLabel(s) {
     return { pending: t("status_pending"), arranged: t("status_arranged"), fulfilled: t("status_fulfilled"), cancelled: t("status_cancelled") }[s] || s;
   }
-
-  // Language switched: refill translated selects and re-render cached tables
-  window.__onLangChange = function () {
-    fillAdminSelects();
-    $("config-note").innerHTML = configWarningBox();
-    renderDonors();
-    renderRequests();
-    renderUpdates();
-  };
 
   $("refresh-donors").addEventListener("click", loadDonors);
   $("refresh-reqs").addEventListener("click", loadRequests);

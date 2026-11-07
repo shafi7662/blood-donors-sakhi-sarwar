@@ -34,18 +34,15 @@
 </header>
 
 <div class="container">
-  <section class="card" id="auth-box" style="display:none">
-    <h2 data-i18n="auth_h2">Supabase ایڈمن سائن ان</h2>
-    <p class="hint" data-i18n="auth_hint">ڈونرز کے فون نمبر اور رپورٹس صرف لاگ ان ایڈمن دیکھ سکتا ہے۔ یہ ای میل / پاس ورڈ وہی ہے جو Supabase Dashboard → Authentication میں ایڈمن صارف کے لیے بنایا گیا تھا (تفصیل README میں)۔</p>
-    <div id="config-note"></div>
-    <form id="auth-form">
-      <label for="auth-email" data-i18n="lbl_email">ای میل</label>
-      <input type="email" id="auth-email" required placeholder="admin@example.com" autocomplete="username" dir="ltr" style="text-align:right">
-      <label for="auth-pass" data-i18n="lbl_pass">پاس ورڈ</label>
-      <input type="password" id="auth-pass" required placeholder="Supabase ایڈمن پاس ورڈ" data-i18n-ph="ph_auth_pass" autocomplete="current-password">
-      <button class="btn full" type="submit" id="auth-btn" data-i18n="auth_signin">سائن ان</button>
+  <section class="card" id="gate-box">
+    <h2 data-i18n="gate_h2">ایڈمن لاگ ان</h2>
+    <p class="hint" data-i18n="gate_hint">یہ صفحہ صرف ٹیم کے ذمہ دار کے لیے ہے۔</p>
+    <form id="gate-form">
+      <label for="gate-pass" data-i18n="lbl_pass">پاس ورڈ</label>
+      <input type="password" id="gate-pass" required placeholder="ایڈمن پاس ورڈ" data-i18n-ph="ph_gate_pass" autocomplete="current-password">
+      <button class="btn full" type="submit" data-i18n="gate_open">کھولیں</button>
     </form>
-    <p id="auth-error" class="hint" style="color:var(--red-bright);font-weight:bold;display:none" data-i18n="auth_error">سائن ان ناکام — ای میل / پاس ورڈ چیک کریں۔</p>
+    <p id="gate-error" class="hint" style="color:var(--red-bright);font-weight:bold;display:none" data-i18n="gate_error">پاس ورڈ غلط ہے۔</p>
   </section>
 
   <section class="card" id="data-box" style="display:none">
@@ -160,16 +157,6 @@
       </table>
     </div>
     <p id="upd-empty" class="empty" style="display:none" data-i18n="upd_empty">ابھی کوئی اپڈیٹ نہیں ہے۔</p>
-
-    <h2><span data-i18n="adm_add_h2">ٹیم ایڈمن بنائیں</span></h2>
-    <p class="hint" data-i18n="adm_add_hint">نئے ایڈمن کا ای میل اور پاس ورڈ درج کریں — وہ اسی پینل میں لاگ ان کر سکے گا۔</p>
-    <form id="new-admin-form">
-      <label for="new-admin-email" data-i18n="lbl_email">ای میل</label>
-      <input type="email" id="new-admin-email" required placeholder="admin@example.com" autocomplete="off" dir="ltr" style="text-align:right">
-      <label for="new-admin-pass" data-i18n="lbl_pass">پاس ورڈ</label>
-      <input type="password" id="new-admin-pass" required minlength="6" placeholder="کم از کم 6 حروف" data-i18n-ph="ph_new_admin_pass" autocomplete="new-password">
-      <button class="btn full" type="submit" id="new-admin-btn" data-i18n="adm_add_btn">ایڈمن بنائیں</button>
-    </form>
   </section>
 
   <footer data-i18n="admin_footer">
@@ -189,6 +176,6 @@
 <script src="supabase-config.js"></script>
 <script src="i18n.js?v=6"></script>
 <script src="app.js?v=4"></script>
-<script src="admin.js?v=7"></script>
+<script src="admin.js?v=8"></script>
 </body>
 </html>
