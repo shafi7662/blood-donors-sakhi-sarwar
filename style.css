@@ -76,6 +76,11 @@ header.topbar .container {
   padding-bottom: 0;
   padding-top: 12px;
 }
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .brand {
   font-size: 1.32em;
   font-weight: bold;
@@ -793,7 +798,8 @@ footer {
 
 /* ---------- Language Toggle ---------- */
 .lang-toggle {
-  margin-right: auto;
+  margin-inline-start: auto;
+  flex-shrink: 0;
   background: #14141c;
   color: #fca5a5;
   border: 1.5px solid #3f3f46;
@@ -808,10 +814,19 @@ footer {
 }
 .lang-toggle:hover { background: var(--red-light); border-color: var(--red); }
 
+/* ---------- Compact header on phones ---------- */
+@media (max-width: 520px) {
+  .brand { font-size: 1.08em; }
+  .brand-mark { width: 42px; height: 42px; border-radius: 13px; }
+  .brand-mark svg { width: 22px; height: 22px; }
+  nav.main { gap: 6px; margin-top: 10px; }
+  nav.main a { padding: 2px 12px; font-size: 0.88em; }
+  header.topbar { padding-bottom: 10px; }
+}
+
 /* ---------- English Mode (LTR) ---------- */
 body.lang-en { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; line-height: 1.6; }
 body.lang-en .brand { line-height: 1.35; text-shadow: none; }
-body.lang-en .lang-toggle { margin-right: 0; margin-left: auto; }
 body.lang-en .card h2 { border-right: none; border-left: 4px solid var(--red); padding-right: 0; padding-left: 12px; line-height: 1.4; }
 body.lang-en .hero h1 { line-height: 1.25; }
 body.lang-en .notice,
