@@ -229,51 +229,6 @@ nav.main a.active:hover { color: #fff; }
 .hero-cta .btn { margin-top: 0; }
 
 /* ---------- Emergency card ---------- */
-.emergency-card {
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
-  color: #fff;
-  border-radius: var(--radius);
-  padding: 16px;
-  margin: 16px 0;
-  box-shadow: var(--shadow-lg);
-}
-.em-top { display: flex; gap: 10px; align-items: flex-start; }
-.em-icon {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: ping-dot 1.8s ease-in-out infinite;
-}
-.em-icon svg { width: 22px; height: 22px; display: block; }
-.em-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.em-title-row b { font-size: 1.08em; line-height: 1.9; }
-.em-badge {
-  background: var(--red-bright);
-  color: #fff;
-  font-size: 0.75em;
-  font-weight: bold;
-  padding: 1px 10px;
-  border-radius: 999px;
-  line-height: 1.8;
-}
-.em-top p { margin: 2px 0 0; color: rgba(255, 255, 255, 0.88); font-size: 0.9em; line-height: 1.9; }
-.em-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  flex-wrap: wrap;
-}
-.em-free { font-size: 0.85em; font-weight: bold; color: rgba(255, 255, 255, 0.9); }
-.emergency-card .btn { margin-top: 0; }
 
 /* ---------- Trust tiles ---------- */
 .trust {
