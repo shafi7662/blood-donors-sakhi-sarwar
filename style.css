@@ -959,3 +959,7 @@ body.lang-en .quote-card { border-right: none; border-left: 4px solid var(--gree
 .brand-mark{position:relative;overflow:hidden;background:#fff}
 .brand-mark img{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:167%;height:auto}
 .hero-logo{display:block;width:190px;max-width:60%;height:auto;margin:2px auto 10px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:var(--shadow-md)}
+
+/* ---- Small round logo mark inside a button (e.g. Download App) ---- */
+.btn-logo{position:relative;display:inline-block;width:20px;height:20px;border-radius:50%;overflow:hidden;background:#fff;flex-shrink:0}
+.btn-logo img{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:167%;height:auto}
