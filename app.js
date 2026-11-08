@@ -42,6 +42,10 @@ function wireWhatsAppLinks() {
   }
 }
 document.addEventListener("DOMContentLoaded", wireWhatsAppLinks);
+// Settings (DB) aa jayein to links dobara lagao — number badla ho to naya lage
+if (typeof siteSettingsReady !== "undefined" && siteSettingsReady && siteSettingsReady.then) {
+  siteSettingsReady.then(wireWhatsAppLinks);
+}
 
 // Config na mukammal ho to user ko saaf batao (khamoshi se fail na ho)
 function configWarningBox() {

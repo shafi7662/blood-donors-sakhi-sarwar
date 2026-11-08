@@ -45,3 +45,20 @@ if (SUPABASE_READY && typeof supabase !== "undefined") {
     SUPABASE_CONFIG.SUPABASE_ANON_KEY
   );
 }
+
+// ---- Site settings (admin panel se badli ja sakti hain) ----
+// team_whatsapp: DB ki site_settings table se aata hai; na mile (table
+// na ho / net na ho) to upar wala TEAM_WHATSAPP (fallback) chalta hai.
+// Har page load par fetch hota hai, aur wa.me links usi ko parhte hain.
+async function loadSiteSettings() {
+  if (!supabaseClient) return;
+  try {
+    var res = await supabaseClient.from("site_settings")
+      .select("key,value").eq("key", "team_whatsapp").maybeSingle();
+    if (res && !res.error && res.data && res.data.value) {
+      var v = String(res.data.value).replace(/\D/g, "");
+      if (v.length >= 10) SUPABASE_CONFIG.TEAM_WHATSAPP = v;
+    }
+  } catch (e) { /* fallback number rehta hai */ }
+}
+var siteSettingsReady = loadSiteSettings();

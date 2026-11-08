@@ -171,13 +171,19 @@
   }
 
   // Home WhatsApp CTA — href comes from the single config number
-  var waBtn = $("wa-cta");
-  if (waBtn) {
+  function wireWaCta() {
+    var waBtn = $("wa-cta");
+    if (!waBtn) return;
     if (typeof teamWhatsAppConfigured === "function" && teamWhatsAppConfigured()) {
       waBtn.href = waLink(SUPABASE_CONFIG.TEAM_WHATSAPP, t("wa_hello"));
     } else {
       waBtn.style.display = "none";
     }
+  }
+  wireWaCta();
+  // Settings (DB) aa jayein to CTA dobara lagao — number badla ho to naya lage
+  if (typeof siteSettingsReady !== "undefined" && siteSettingsReady && siteSettingsReady.then) {
+    siteSettingsReady.then(wireWaCta);
   }
 
   // Language switched: refill translated selects and re-render cached results

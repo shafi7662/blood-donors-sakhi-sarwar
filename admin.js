@@ -112,9 +112,47 @@
     }
     $("gate-box").style.display = "none";
     $("data-box").style.display = "block";
+    loadWaSetting();
     loadDonors();
     loadRequests();
     loadUpdates();
+  });
+
+  // ---- Team WhatsApp setting (admin panel se badla ja sakta hai) ----
+  function displayWa(n) {
+    var d = String(n || "").replace(/\D/g, "");
+    if (d.indexOf("92") === 0 && d.length === 12) return "0" + d.slice(2);
+    return d || "—";
+  }
+  async function loadWaSetting() {
+    if (typeof siteSettingsReady !== "undefined" && siteSettingsReady && siteSettingsReady.then) {
+      try { await siteSettingsReady; } catch (e) { /* fallback number */ }
+    }
+    var n = displayWa(SUPABASE_CONFIG.TEAM_WHATSAPP);
+    $("wa-number").value = n === "—" ? "" : n;
+    $("wa-current").textContent = n;
+  }
+  $("wa-settings-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var d = String($("wa-number").value || "").replace(/\D/g, "");
+    if (d.charAt(0) === "0") d = "92" + d.slice(1);
+    if (d.indexOf("92") !== 0 || d.length !== 12) {
+      showToast(t("set_wa_invalid"));
+      return;
+    }
+    var res = await supabaseClient.from("site_settings").upsert({
+      key: "team_whatsapp",
+      value: d,
+      updated_at: new Date().toISOString()
+    });
+    if (res.error) {
+      console.error(res.error);
+      showToast(t("set_wa_fail"));
+      return;
+    }
+    SUPABASE_CONFIG.TEAM_WHATSAPP = d;
+    $("wa-current").textContent = displayWa(d);
+    showToast(t("set_wa_saved"));
   });
 
   $("signout-btn").addEventListener("click", async function () {

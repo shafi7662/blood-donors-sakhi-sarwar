@@ -22,6 +22,11 @@
     var btn = $("submit-btn");
     btn.disabled = true;
 
+    // Team number DB se aa jaye to wahi use ho (admin ne badla ho to naya)
+    if (typeof siteSettingsReady !== "undefined" && siteSettingsReady && siteSettingsReady.then) {
+      try { await siteSettingsReady; } catch (err) { /* fallback number */ }
+    }
+
     var file = $("report").files[0];
     if (!file) { showToast(t("toast_no_file")); btn.disabled = false; return; }
     if (file.size > 5 * 1024 * 1024) {
