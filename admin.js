@@ -3,8 +3,8 @@
 // service account (same password — see ADMIN_EMAIL / ADMIN_PASSWORD in
 // supabase-config.js). No second login is ever shown.
 // Phone numbers and reports are visible ONLY after that sign-in (RLS: authenticated role).
-// v8 (2026-11-07): gate restored, Supabase form removed, add-admin form removed
-// (with one shared password, "making an admin" just means sharing the password).
+// v9 (2026-11-08): ADVANCED — stats dashboard, group counts, request→donor
+// matching, request search, available-only filter, CSV export.
 // v2: search + blood-group filter, per-donor stats (last donation, days since, count),
 // "record donation" button, and delete buttons (RLS delete policies for authenticated).
 (function () {
@@ -41,6 +41,47 @@
     now.setHours(0, 0, 0, 0);
     var diff = Math.floor((now - d) / 86400000);
     return diff < 0 ? 0 : diff;
+  }
+
+  // Donor can donate now: never donated, or 90+ days since last donation
+  function isAvailable(d) {
+    if (!d.last_donation_date) return true;
+    var ds = daysSince(d.last_donation_date);
+    return ds !== "—" && ds >= 90;
+  }
+
+  // Days since a request was created (ISO timestamp)
+  function waitDays(iso) {
+    if (!iso) return 0;
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return 0;
+    var now = new Date(); now.setHours(0, 0, 0, 0);
+    var dd = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    return Math.max(0, Math.floor((now - dd) / 86400000));
+  }
+
+  // ---- Stats dashboard ----
+  var GROUPS = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"];
+  function renderStats() {
+    var avail = allDonors.filter(isAvailable).length;
+    var pending = allRequests.filter(function (r) { return r.status === "pending"; }).length;
+    var fulfilled = allRequests.filter(function (r) { return r.status === "fulfilled"; }).length;
+    var m = new Date();
+    var ym = m.getFullYear() + "-" + String(m.getMonth() + 1).padStart(2, "0");
+    var monthDon = allDonors.filter(function (d) {
+      return d.last_donation_date && d.last_donation_date.indexOf(ym) === 0;
+    }).length;
+    $("stat-donors").textContent = allDonors.length;
+    $("stat-avail").textContent = avail;
+    $("stat-pending").textContent = pending;
+    $("stat-fulfilled").textContent = fulfilled;
+    $("stat-month").textContent = monthDon;
+    $("stat-updates").textContent = allUpdates.length;
+    $("group-stats").innerHTML = GROUPS.map(function (g) {
+      var tot = allDonors.filter(function (d) { return d.blood_group === g; }).length;
+      var av = allDonors.filter(function (d) { return d.blood_group === g && isAvailable(d); }).length;
+      return '<span class="group-chip"><b>' + esc(g) + '</b> ' + tot + ' · ' + av + ' ' + esc(t("stat_avail_short")) + '</span>';
+    }).join("");
   }
 
   // ---- The panel's own login: one password ----
@@ -84,6 +125,7 @@
   // Language switched: refill translated selects and re-render cached tables
   window.__onLangChange = function () {
     fillAdminSelects();
+    renderStats();
     renderDonors();
     renderRequests();
     renderUpdates();
@@ -99,6 +141,7 @@
     }
     allDonors = res.data;
     renderDonors();
+    renderStats();
   }
 
   function renderDonors() {
@@ -108,6 +151,7 @@
     var list = allDonors.filter(function (d) {
       if (group && d.blood_group !== group) return false;
       if (city && d.city !== city) return false;
+      if ($("d-avail").checked && !isAvailable(d)) return false;
       if (q) {
         var hay = (d.name + " " + d.phone + " " + d.city).toLowerCase();
         if (hay.indexOf(q.toLowerCase()) === -1) return false;
@@ -176,6 +220,7 @@
     }
     allRequests = res.data;
     renderRequests();
+    renderStats();
   }
 
   // cc (1 یونٹ ≈ 400cc) — پرانی قطاروں میں صرف units_needed ہو تو اس سے حساب
@@ -192,8 +237,20 @@
 
   function renderRequests() {
     var group = $("r-group").value;
+    var q = ($("r-search").value || "").trim().toLowerCase();
+    var rank = { pending: 0, arranged: 1, fulfilled: 2, cancelled: 3 };
     var list = allRequests.filter(function (r) {
-      return !group || r.blood_group === group;
+      if (group && r.blood_group !== group) return false;
+      if (q) {
+        var hay = ((r.patient_name || "") + " " + (r.hospital || "") + " " + (r.requester_phone || "")).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    }).sort(function (a, b) {
+      var ra = rank[a.status] == null ? 9 : rank[a.status];
+      var rb = rank[b.status] == null ? 9 : rank[b.status];
+      if (ra !== rb) return ra - rb;
+      return new Date(b.created_at) - new Date(a.created_at);
     });
     var tbody = $("req-rows");
     tbody.innerHTML = "";
@@ -206,12 +263,15 @@
       var statusBadge = r.status === "fulfilled"
         ? '<span class="badge done">' + esc(t("status_fulfilled")) + "</span>"
         : '<span class="badge">' + esc(statusLabel(r.status)) + "</span>";
+      var wait = r.status === "pending"
+        ? "<br><small>" + esc(t("wait_days", { n: waitDays(r.created_at) })) + "</small>"
+        : "";
       tr.innerHTML =
         "<td>" + esc(r.patient_name) + "</td>" +
         "<td>" + esc(r.hospital) + (CURRENT_LANG === "ur" ? "، " : ", ") + esc(cityLabel(r.city)) + "</td>" +
         "<td><b>" + esc(r.blood_group) + "</b></td>" +
         "<td><b>" + esc(ccText(r)) + "</b></td>" +
-        "<td>" + statusBadge + "<br>" +
+        "<td>" + statusBadge + wait + "<br>" +
           "<select data-req=\"" + r.id + "\" class=\"status-sel\">" +
             ["pending", "arranged", "fulfilled", "cancelled"].map(function (s) {
               return "<option value=\"" + s + "\"" + (s === r.status ? " selected" : "") + ">" + statusLabel(s) + "</option>";
@@ -223,6 +283,9 @@
         "<td dir=\"ltr\">" + esc(r.requester_phone) + "</td>" +
         "<td style=\"white-space:nowrap\">" +
           "<a class=\"btn small green\" href=\"" + wa + "\" target=\"_blank\">" + esc(t("btn_whatsapp")) + "</a> " +
+          (r.status === "pending" || r.status === "arranged"
+            ? "<button class=\"btn small\" type=\"button\" data-match=\"" + esc(r.blood_group) + "\" data-patient=\"" + esc(r.patient_name) + "\">" + esc(t("btn_match")) + "</button> "
+            : "") +
           "<button class=\"btn small danger\" type=\"button\" data-del-req=\"" + r.id + "\" data-name=\"" + esc(r.patient_name) + "\">" + esc(t("btn_delete")) + "</button>" +
         "</td>";
       tbody.appendChild(tr);
@@ -261,6 +324,28 @@
         else { showToast(t("toast_del_req_ok")); loadRequests(); }
       });
     });
+
+    // find matching available donors for a request
+    tbody.querySelectorAll("[data-match]").forEach(function (btnEl) {
+      btnEl.addEventListener("click", function () {
+        var g = btnEl.dataset.match;
+        var matches = allDonors.filter(function (d) { return d.blood_group === g && isAvailable(d); });
+        $("match-title").textContent = t("match_for", { group: g, patient: btnEl.dataset.patient });
+        var box = $("match-rows");
+        box.innerHTML = "";
+        $("match-empty").style.display = matches.length ? "none" : "block";
+        matches.forEach(function (d) {
+          var wa2 = waLink(d.phone, t("wa_admin_donor", { name: d.name, group: d.blood_group }));
+          var row = document.createElement("div");
+          row.className = "match-row";
+          row.innerHTML = "<span><b>" + esc(d.name) + "</b> · " + esc(cityLabel(d.city)) + " · <span dir=\"ltr\">" + esc(d.phone) + "</span></span> " +
+            "<a class=\"btn small green\" href=\"" + wa2 + "\" target=\"_blank\">" + esc(t("btn_whatsapp")) + "</a>";
+          box.appendChild(row);
+        });
+        $("match-box").style.display = "block";
+        $("match-box").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    });
   }
 
   // ---- Updates: photo + story of patients who received blood ----
@@ -276,6 +361,7 @@
     }
     allUpdates = res.data;
     renderUpdates();
+    renderStats();
   }
 
   function renderUpdates() {
@@ -394,11 +480,45 @@
     return { pending: t("status_pending"), arranged: t("status_arranged"), fulfilled: t("status_fulfilled"), cancelled: t("status_cancelled") }[s] || s;
   }
 
+  // ---- CSV export ----
+  function downloadCSV(filename, rows) {
+    var csv = rows.map(function (r) {
+      return r.map(function (c) {
+        var s = String(c == null ? "" : c);
+        return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }).join(",");
+    }).join("\n");
+    var blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  $("export-donors").addEventListener("click", function () {
+    var rows = [["Name", "Group", "City", "Age", "Phone", "Last donation", "Donations"]]
+      .concat(allDonors.map(function (d) {
+        return [d.name, d.blood_group, d.city, d.age, d.phone, d.last_donation_date || "", d.donation_count || 0];
+      }));
+    downloadCSV("donors-" + todayStr() + ".csv", rows);
+  });
+  $("export-reqs").addEventListener("click", function () {
+    var rows = [["Patient", "Hospital", "City", "Group", "CC", "Status", "Phone", "Created"]]
+      .concat(allRequests.map(function (r) {
+        return [r.patient_name, r.hospital, r.city, r.blood_group, ccOf(r) || "", r.status, r.requester_phone, r.created_at || ""];
+      }));
+    downloadCSV("requests-" + todayStr() + ".csv", rows);
+  });
+
   $("refresh-donors").addEventListener("click", loadDonors);
   $("refresh-reqs").addEventListener("click", loadRequests);
   $("refresh-updates").addEventListener("click", loadUpdates);
   $("d-search").addEventListener("input", renderDonors);
   $("d-group").addEventListener("change", renderDonors);
   $("d-city").addEventListener("change", renderDonors);
+  $("d-avail").addEventListener("change", renderDonors);
   $("r-group").addEventListener("change", renderRequests);
+  $("r-search").addEventListener("input", renderRequests);
+  $("match-close").addEventListener("click", function () { $("match-box").style.display = "none"; });
 })();

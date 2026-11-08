@@ -985,3 +985,17 @@ body.lang-en .quote-card { border-right: none; border-left: 4px solid var(--gree
   .hero-label .dot, .em-icon { animation: none; }
   .team, .group-pill, .donor, .btn { transition: none; }
 }
+
+/* ---- Admin v9: stats dashboard + matching ---- */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 14px}
+.stat-card{background:#fff;border:1px solid #e8e6f5;border-radius:14px;padding:12px 10px;text-align:center;box-shadow:0 1px 4px rgba(20,10,60,.06)}
+.stat-num{display:block;font-family:"Plus Jakarta Sans",sans-serif;font-size:26px;font-weight:800;color:#8B1414;line-height:1.1}
+.stat-lbl{display:block;font-size:13px;color:#5b5470;margin-top:4px}
+.sub-h{margin:14px 0 8px;font-size:16px}
+.group-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.group-chip{background:#fff;border:1px solid #e8e6f5;border-radius:999px;padding:6px 12px;font-size:13px}
+.group-chip b{color:#8B1414}
+.match-box{background:#f6f4ff;border:1px dashed #c9c2ec;border-radius:14px;padding:12px;margin-top:12px}
+.match-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee9f7}
+.match-row:last-child{border-bottom:0}
+@media(max-width:640px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
